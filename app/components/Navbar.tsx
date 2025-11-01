@@ -55,6 +55,7 @@ export const Navbar = () => {
           ))}
         </div>
         {/* Mobile version */}
+
         <button
           onClick={() => setIsMenuOpen((prev) => !prev)}
           className="md:hidden p-2 z-50 text-foreground"
@@ -65,8 +66,11 @@ export const Navbar = () => {
 
         <div
           className={cn(
-            "fixed inset-0 bg-background/95 backdroup-blur-md z-40 flex flex-col items-center justify-center",
-            "transition-all duration-300 md:hidden",
+            // full-screen mobile menu overlay
+            "fixed inset-0 z-40 flex flex-col items-center justify-center transition-all duration-300 md:hidden",
+            // background styling (blur + slight transparency)
+            "bg-background/70 backdrop-blur-md",
+            // conditional visibility
             isMenuOpen
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"
