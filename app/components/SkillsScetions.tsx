@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { cn } from "../lib/utils";
 
 const skills = [
   // Frontend
-  { name: "HTML/CSS", category: "frontend" },
+  { name: "HTML / CSS", category: "frontend" },
   { name: "JavaScript", category: "frontend" },
   { name: "React", category: "frontend" },
   { name: "TypeScript", category: "frontend" },
@@ -16,14 +17,14 @@ const skills = [
   { name: "SQL", category: "backend" },
 
   // Tools
-  { name: "Git/GitHub", category: "tools" },
+  { name: "Git & GitHub", category: "tools" },
   { name: "Figma", category: "tools" },
   { name: "VS Code", category: "tools" },
 ];
 
 const categories = ["all", "frontend", "backend", "tools"];
 
-export const SkillsScetions = () => {
+export default function SkillsScetions () {
   const [activeCategory, setActiveCategory] = useState("all");
 
   const filteredSkills = skills.filter((skill) =>
@@ -31,49 +32,78 @@ export const SkillsScetions = () => {
   );
 
   return (
-    <section id="skills" className="py-24 px-4 relative bg-secondary/10">
-      <div className="container mx-auto max-w-5xl">
-        {/* Section Title */}
-        <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-          My <span className="text-primary">Skills</span>
-        </h2>
+    <section id="skills" className="py-24 relative overflow-hidden">
+      {/* Background Accent Glow */}
+      <div className="absolute inset-0 -z-10 bg-linear-to-br from-purple-900/20 via-black to-black" />
+      <div className="absolute -top-40 right-0 w-72 h-72 bg-linear-to-br from-pink-500 to-yellow-400 rounded-full blur-[160px] opacity-20" />
+
+      <div className="max-w-6xl mx-auto px-4">
+        {/* Title */}
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-4xl md:text-5xl font-extrabold text-center mb-12"
+        >
+          My{" "}
+          <span className="bg-clip-text text-transparent bg-linear-to-r from-pink-500 via-red-500 to-yellow-400">
+            Skills
+          </span>
+        </motion.h2>
 
         {/* Category Filters */}
-        <div className="flex flex-wrap justify-center mb-12 gap-4">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-wrap justify-center gap-4 mb-14"
+        >
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
               className={cn(
-                "px-5 py-2 rounded-full transition-colors duration-300 capitalize font-medium",
+                "px-5 py-2 rounded-full capitalize font-medium text-sm transition-all",
                 activeCategory === category
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "bg-secondary/70 text-foreground hover:bg-secondary hover:text-primary"
+                  ? "bg-linear-to-r from-pink-500 to-yellow-400 text-black shadow-lg scale-105"
+                  : "bg-white/5 text-white/80 hover:bg-white/10"
               )}
             >
               {category}
             </button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Skills Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredSkills.map((skill) => (
-            <div
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredSkills.map((skill, index) => (
+            <motion.div
               key={skill.name}
-              className="bg-card p-6 rounded-lg shadow-xs card-hover transition-transform duration-300 hover:scale-[1.02]"
+              initial={{ opacity: 0, y: 20, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: index * 0.05 }}
+              whileHover={{ scale: 1.03 }}
+              className="relative bg-white/5 backdrop-blur-xl p-6 rounded-xl border border-white/10 shadow-xl group overflow-hidden"
             >
-              <div className="text-left mb-2">
-                <h3 className="font-semibold text-lg text-foreground">
-                  {skill.name}
-                </h3>
-              </div>
+              {/* Gradient Hover Glow */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-linear-to-r from-pink-500/20 via-red-500/20 to-yellow-400/20 transition-opacity duration-500"></div>
 
-              {/* Skill Level Placeholder (for future animation) */}
-              <div className="w-full bg-secondary/20 rounded-full h-2 overflow-hidden">
-                {/* You can animate a progress bar here later if needed */}
-              </div>
-            </div>
+              <h3 className="relative font-semibold text-lg text-white mb-3">
+                {skill.name}
+              </h3>
+
+              {/* <div className="relative w-full bg-white/10 rounded-full h-2 overflow-hidden">
+                <motion.div
+                  className="h-full bg-linear-to-r from-pink-500 to-yellow-400"
+                  initial={{ width: 0 }}
+        
+                  transition={{ duration: 1.2, delay: 0.2 }}
+                />
+              </div> */}
+            </motion.div>
           ))}
         </div>
       </div>

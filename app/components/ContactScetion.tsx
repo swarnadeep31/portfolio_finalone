@@ -5,6 +5,7 @@ import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useToast } from "../hooks/use-toast";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export const ContactSection = () => {
   const { toast } = useToast();
@@ -33,21 +34,20 @@ export const ContactSection = () => {
       if (res.ok) {
         toast({
           title: "Message sent!",
-          description: "Thank you for your message. I'll get back to you soon.",
+          description: "Thank you — I'll get back to you soon.",
         });
         form.reset();
       } else {
-        const data = await res.json().catch(() => ({}));
         toast({
           title: "Failed to send",
-          description: data?.error || "Something went wrong. Please try again.",
+          description: "Something went wrong. Try again.",
           variant: "destructive",
         });
       }
-    } catch (err) {
+    } catch {
       toast({
         title: "Network error",
-        description: "Please check your connection and try again.",
+        description: "Check your connection and try again.",
         variant: "destructive",
       });
     } finally {
@@ -56,122 +56,150 @@ export const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="py-24 px-4 relative bg-secondary/30">
-      <div className="container mx-auto max-w-5xl">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-          Get In <span className="text-primary">Touch</span>
-        </h2>
+    <section id="contact" className="relative py-24 overflow-hidden px-4">
+      {/* Background Glow */}
+      <div className="absolute inset-0 -z-10 bg-linear-to-br from-purple-900/20 via-black to-black" />
+      <div className="absolute bottom-0 right-0 w-[450px] h-[450px] bg-linear-to-r from-pink-500 to-yellow-400 blur-[160px] opacity-20 rounded-full" />
 
-        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-          I'm always open to discussing new projects, creative ideas, or
-          opportunities to be part of your vision. Feel free to reach out using
-          the form below or via email.
-        </p>
+      <div className="max-w-6xl mx-auto">
+        {/* Title */}
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="text-4xl md:text-5xl font-extrabold text-center mb-4"
+        >
+          Get In{" "}
+          <span className="bg-clip-text text-transparent bg-linear-to-r from-pink-500 via-red-500 to-yellow-400">
+            Touch
+          </span>
+        </motion.h2>
 
-        {/* Contact Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          {/* Left Side — Info */}
-          <div className="space-y-8">
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="text-center text-gray-300 max-w-2xl mx-auto mb-16"
+        >
+          I'm open to freelance work, collaborations, or full-time opportunities.
+          Feel free to reach out!
+        </motion.p>
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-14">
+          {/* Left Side — Contact Info */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="space-y-10"
+          >
             <div>
-              <h3 className="text-2xl font-semibold mb-2">
-                Let’s <span className="text-primary">Talk</span>
+              <h3 className="text-2xl font-semibold mb-3">
+                Let's{" "}
+                <span className="bg-clip-text text-transparent bg-linear-to-r from-pink-500 to-yellow-400">
+                  Connect
+                </span>
               </h3>
-              <p className="text-muted-foreground">
-                You can reach me directly through any of the options below:
+              <p className="text-gray-400">
+                Reach out anytime — I usually reply within 24 hours.
               </p>
             </div>
 
             {/* Email */}
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-full bg-primary/10">
-                <Mail className="h-6 w-6 text-primary" />
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              className="flex items-center gap-4"
+            >
+              <div className="p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
+                <Mail className="h-6 w-6 text-pink-400" />
               </div>
               <Link
                 href="mailto:Swarnadeeproy35@gmail.com"
-                className="text-muted-foreground hover:text-primary text-sm transition-colors duration-300 warp-break-words"
+                className="text-gray-300 hover:text-white transition"
               >
                 Swarnadeeproy35@gmail.com
               </Link>
-            </div>
+            </motion.div>
 
             {/* Phone */}
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-full bg-primary/10">
-                <Phone className="h-6 w-6 text-primary" />
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              className="flex items-center gap-4"
+            >
+              <div className="p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
+                <Phone className="h-6 w-6 text-pink-400" />
               </div>
               <Link
                 href="tel:+917439732996"
-                className="text-muted-foreground hover:text-primary text-sm transition-colors duration-300"
+                className="text-gray-300 hover:text-white transition"
               >
                 +91 74397 32996
               </Link>
-            </div>
+            </motion.div>
 
             {/* Location */}
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-full bg-primary/10">
-                <MapPin className="h-6 w-6 text-primary" />
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              className="flex items-center gap-4"
+            >
+              <div className="p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
+                <MapPin className="h-6 w-6 text-pink-400" />
               </div>
-              <p className="text-muted-foreground text-sm">
-                Kolkata, WB, India
-              </p>
-            </div>
-          </div>
+              <p className="text-gray-300">Kolkata, WB, India</p>
+            </motion.div>
+          </motion.div>
 
           {/* Right Side — Form */}
-          <div className="bg-card p-6 md:p-8 rounded-lg shadow-sm">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-xl"
+          >
             <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-              {/* Name */}
-              <div>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-hidden focus:ring-2 focus:ring-primary"
-                  placeholder="Your Name..."
-                />
-              </div>
+              <input
+                type="text"
+                name="name"
+                required
+                placeholder="Your Name"
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:ring-2 focus:ring-pink-500 focus:outline-none text-white"
+              />
 
-              {/* Email */}
-              <div>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-hidden focus:ring-2 focus:ring-primary"
-                  placeholder="you@example.com"
-                />
-              </div>
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="you@example.com"
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:ring-2 focus:ring-pink-500 text-white"
+              />
 
-              {/* Message */}
-              <div>
-                <textarea
-                  id="message"
-                  name="message"
-                  required
-                  rows={4}
-                  className="w-full px-4 py-3 rounded-md border border-input bg-background focus:outline-hidden focus:ring-2 focus:ring-primary resize-none"
-                  placeholder="Hello, I'd like to talk about..."
-                />
-              </div>
+              <textarea
+                name="message"
+                rows={4}
+                required
+                placeholder="Your message..."
+                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:ring-2 focus:ring-pink-500 text-white resize-none"
+              />
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className={cn(
-                  "cosmic-button w-full flex items-center justify-center gap-2"
+                  "w-full py-3 rounded-lg bg-linear-to-r from-pink-500 to-yellow-400 text-black font-semibold shadow-lg hover:brightness-110 transition flex items-center justify-center gap-2"
                 )}
               >
                 {isSubmitting ? "Sending..." : "Send Message"}
                 <Send size={16} />
               </button>
             </form>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

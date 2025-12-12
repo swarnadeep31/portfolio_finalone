@@ -1,107 +1,106 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { Briefcase, Code, User } from "lucide-react";
 
 export const AboutSection = () => {
   return (
-    <section id="about" className="py-24 px-4 relative">
-      <div className="container mx-auto max-w-5xl">
-        {/* Section Heading */}
-        <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-          About <span className="text-primary">Me</span>
-        </h2>
+    <section id="about" className="relative py-28 overflow-hidden px-6">
+      {/* Background Glow */}
+      <div className="absolute inset-0 -z-10 bg-linear-to-br from-purple-900/20 via-black to-black" />
+      <div className="absolute top-10 right-0 w-[500px] h-[500px] bg-linear-to-br from-pink-500 to-yellow-400 rounded-full blur-[180px] opacity-20" />
 
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-12">
-          {/* Left Column - About Text */}
-          <div className="space-y-6 text-center md:text-left">
-            <h3 className="text-2xl font-semibold">
-              Web Developer & Game Enthusiast
-            </h3>
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+        {/* Left Text Block */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="space-y-6"
+        >
+          <h2 className="text-4xl md:text-5xl font-extrabold">
+            About{" "}
+            <span className="bg-clip-text text-transparent bg-linear-to-r from-pink-500 via-red-500 to-yellow-400">
+              Me
+            </span>
+          </h2>
 
-            <p className="text-muted-foreground leading-relaxed">
-              I’ve built multiple projects ranging from simple landing pages to
-              complex web applications. I’m passionate about creating seamless
-              user experiences and writing clean, efficient code. I also love to
-              play games during leisure time — it keeps my creativity sharp.
-            </p>
+          <p className="text-gray-300 leading-relaxed">
+            I'm a passionate frontend developer specializing in modern web
+            technologies. I love building smooth, aesthetic, and deeply
+            interactive user experiences using React, TypeScript, and Tailwind
+            CSS.
+          </p>
 
-            <p className="text-muted-foreground leading-relaxed">
-              I enjoy learning new technologies and continuously improving my
-              skills. When I’m not coding, I’m usually gaming or exploring new
-              design ideas to bring into my projects.
-            </p>
+          <p className="text-gray-300 leading-relaxed">
+            When I’m not coding, I enjoy gaming, exploring UI/UX inspiration,
+            and continuously learning new technologies to sharpen my craft.
+          </p>
 
-            {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center md:justify-start">
-              <Link href="#contact" className="cosmic-button text-center">
-                Get In Touch
-              </Link>
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <Link href="#contact" className="px-6 py-3 rounded-full bg-linear-to-r from-pink-500 to-yellow-400 text-black font-semibold shadow-lg hover:scale-[1.03] transition">
+              Get In Touch
+            </Link>
 
-              <Link
-                href="https://drive.google.com/file/d/1kqOx5FgZG3I2JU50iJG9TtOUloRxk-Nm/view?usp=sharing"
-                target="_blank"
-                className="px-6 py-2 rounded-full border border-primary hover:bg-primary/10 transition-colors duration-300 text-center"
-              >
-                Download CV
-              </Link>
-            </div>
+            <Link
+              href="https://drive.google.com/file/d/1kqOx5FgZG3I2JU50iJG9TtOUloRxk-Nm/view?usp=sharing"
+              target="_blank"
+              className="px-6 py-3 rounded-full border border-white/20 text-white hover:bg-white/10 transition"
+            >
+              Download CV
+            </Link>
           </div>
+        </motion.div>
 
-          {/* Right Column - Info Cards */}
-          <div className="grid grid-cols-1 gap-6">
-            {/* Card 1 */}
-            <div className="gradient-border p-6 card-hover">
+        {/* Right Floating Cards */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="grid gap-6"
+        >
+          {[
+            {
+              title: "Web Development",
+              desc: "Building sleek, responsive, and modern interfaces with React, TypeScript, and Tailwind CSS.",
+              icon: <Code className="h-6 w-6 text-pink-400" />,
+            },
+            {
+              title: "Computer Science Student",
+              desc: "MCA student focusing on software engineering, algorithms, and real-world application development.",
+              icon: <User className="h-6 w-6 text-pink-400" />,
+            },
+            {
+              title: "Projects & Experience",
+              desc: "Hands-on experience building full-stack and real-world production-grade applications.",
+              icon: <Briefcase className="h-6 w-6 text-pink-400" />,
+            },
+          ].map((card, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
+              whileHover={{ scale: 1.03 }}
+              className="p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl"
+            >
               <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10 shrink-0">
-                  <Code className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-left">
-                  <h4 className="font-semibold text-lg">Web Development</h4>
-                  <p className="text-muted-foreground">
-                    I build responsive and dynamic web apps using modern tools
-                    like React, TypeScript, and Tailwind CSS.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div className="gradient-border p-6 card-hover">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10 shrink-0">
-                  <User className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-left">
-                  <h4 className="font-semibold text-lg">University Student</h4>
-                  <p className="text-muted-foreground">
-                    Currently pursuing my Master’s in Computer Science, focusing
-                    on software development and algorithms.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div className="gradient-border p-6 card-hover">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10 shrink-0">
-                  <Briefcase className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-left">
-                  <h4 className="font-semibold text-lg">
-                    Projects & Experience
+                <div className="p-3 rounded-full bg-white/10">{card.icon}</div>
+                <div>
+                  <h4 className="text-lg font-semibold text-white">
+                    {card.title}
                   </h4>
-                  <p className="text-muted-foreground">
-                    Experienced in building and deploying real-world web
-                    applications that emphasize performance and UI/UX quality.
-                  </p>
+                  <p className="text-gray-300 text-sm mt-1">{card.desc}</p>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

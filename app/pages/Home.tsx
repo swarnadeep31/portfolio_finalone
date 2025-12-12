@@ -4,10 +4,13 @@ import { Footer } from "../components/Footer";
 import { HeroSection } from "../components/HeroSecton";
 
 import { Navbar } from "../components/Navbar";
-import { ProjectScetion } from "../components/ProjectScetion";
-import { SkillsScetions } from "../components/SkillsScetions";
+import ProjectSection from "../components/ProjectScetion";
 
-import { StarBackground } from "../components/StarBackground";
+
+import  SkillsScetions  from "../components/SkillsScetions";
+import StarBackground from "../components/StarBackground";
+
+
 import { ThemeToggle } from "../components/ThemeToggle";
 
 export const Home = () => {
@@ -25,7 +28,7 @@ export const Home = () => {
         <HeroSection />
         <AboutSection />
         <SkillsScetions />
-        <ProjectScetion />
+        <ProjectSection/>
         <ContactSection />
       </main>
       {/* Footer Component */}

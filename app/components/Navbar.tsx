@@ -1,7 +1,9 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { cn } from "../lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { cn } from "../lib/utils";
 
 const navItems = [
   { name: "Home", href: "#hero" },
@@ -14,82 +16,88 @@ const navItems = [
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    const onScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
   return (
-    <nav
+    <motion.nav
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0, transition: { duration: 0.6 } }}
       className={cn(
-        "fixed w-full z-40 transition-all duration-300",
+        "fixed top-0 left-0 w-full z-50 transition-all duration-300",
         isScrolled
-          ? "py-3 bg-background/80 backdrop-blur-md shadow-x5 "
-          : "py-5"
+          ? "py-3 bg-black/40 backdrop-blur-xl shadow-lg border-b border-white/10"
+          : "py-6 bg-transparent"
       )}
     >
-      <div className=" container flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
+        {/* Logo */}
         <a
-          className="text-xl font-bold text-primary flex items-center"
           href="#hero"
+          className="text-xl md:text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-pink-500 via-red-500 to-yellow-400"
         >
-          <span className="relative z-10 p-4">
-            <span className="text-glow text-foreground">Swarnadeep</span>{" "}
-            Portfolio
-          </span>
+          Swarnadeep
         </a>
-        {/* Desktop version */}
-        <div className="hidden md:flex space-x-8 text-foreground font-medium">
-          {navItems.map((item, key) => (
-            <a
-              key={key}
-              href={item.href}
-              className="text-foreground/80 hover:text-primary transition-colors duration-300"
+
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center space-x-8">
+          {navItems.map((link, i) => (
+            <motion.a
+              key={i}
+              href={link.href}
+              className="relative text-sm font-medium text-white/70 hover:text-white transition"
+              whileHover={{ y: -2 }}
             >
-              {item.name}
-            </a>
+              {link.name}
+
+              {/* Animated underline */}
+              <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-linear-to-r from-pink-500 to-yellow-400 transition-all duration-300 group-hover:w-full"></span>
+            </motion.a>
           ))}
         </div>
-        {/* Mobile version */}
 
+        {/* Mobile Toggle Button */}
         <button
-          onClick={() => setIsMenuOpen((prev) => !prev)}
-          className="md:hidden p-2 z-50 text-foreground"
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          onClick={() => setIsMenuOpen((p) => !p)}
+          aria-label="Open menu"
+          className="md:hidden p-2 text-white"
         >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
 
-        <div
-          className={cn(
-            // full-screen mobile menu overlay
-            "fixed inset-0 z-40 flex flex-col items-center justify-center transition-all duration-300 md:hidden",
-            // background styling (blur + slight transparency)
-            "bg-background/70 backdrop-blur-md",
-            // conditional visibility
-            isMenuOpen
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/70 backdrop-blur-xl flex flex-col items-center justify-center space-y-10 z-40"
+            >
+              {navItems.map((link, i) => (
+                <motion.a
+                  key={i}
+                  href={link.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    transition: { delay: i * 0.08 },
+                  }}
+                  className="text-3xl font-semibold text-white hover:text-transparent bg-clip-text bg-linear-to-r from-pink-500 via-red-500 to-yellow-400 transition"
+                >
+                  {link.name}
+                </motion.a>
+              ))}
+            </motion.div>
           )}
-        >
-          <div className="flex flex-col space-y-8 text-xl">
-            {navItems.map((item, key) => (
-              <a
-                key={key}
-                href={item.href}
-                className="text-foreground/80 hover:text-primary transition-colors duration-300"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-              </a>
-            ))}
-          </div>
-        </div>
+        </AnimatePresence>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
