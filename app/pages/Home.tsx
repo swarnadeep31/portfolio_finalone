@@ -7,6 +7,7 @@ import { Navbar } from "../components/Navbar";
 import ProjectSection from "../components/ProjectScetion";
 
 
+
 import  SkillsScetions  from "../components/SkillsScetions";
 import StarBackground from "../components/StarBackground";
 
