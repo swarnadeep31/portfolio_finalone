@@ -84,8 +84,8 @@ export const ProjectSection: React.FC = () => {
   return (
     <section id="projects" className="py-24 px-4">
       <div className="mx-auto max-w-5xl">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-          Featured <span className="text-primary">Projects</span>
+        <h2 className="text-4xl md:text-5xl font-extrabold text-center mb-4">
+          Featured <span className="bg-clip-text text-transparent bg-linear-to-r from-pink-500 via-red-500 to-yellow-400">Projects</span>
         </h2>
 
         <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
