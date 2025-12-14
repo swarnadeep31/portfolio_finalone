@@ -6,8 +6,9 @@ import { cn } from "../lib/utils";
 import { useToast } from "../hooks/use-toast";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import SectionWrapper from "./StackedSection";
 
-export const ContactSection = () => {
+export default function ContactSection() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,21 +34,17 @@ export const ContactSection = () => {
 
       if (res.ok) {
         toast({
-          title: "Message sent!",
-          description: "Thank you — I'll get back to you soon.",
+          title: "Message sent",
+          description: "Thanks for reaching out. I’ll reply shortly.",
         });
         form.reset();
       } else {
-        toast({
-          title: "Failed to send",
-          description: "Something went wrong. Try again.",
-          variant: "destructive",
-        });
+        throw new Error("Failed");
       }
     } catch {
       toast({
-        title: "Network error",
-        description: "Check your connection and try again.",
+        title: "Something went wrong",
+        description: "Please try again later.",
         variant: "destructive",
       });
     } finally {
@@ -56,152 +53,129 @@ export const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="relative py-24 overflow-hidden px-4">
-      {/* Background Glow */}
-      <div className="absolute inset-0 -z-10 bg-linear-to-br from-purple-900/20 via-black to-black" />
-      <div className="absolute bottom-0 right-0 w-[450px] h-[450px] bg-linear-to-r from-pink-500 to-yellow-400 blur-[160px] opacity-20 rounded-full" />
+    <SectionWrapper id="contact">
+      <section className="relative bg-[#f7f3ee] py-32">
+        {/* Paper texture */}
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom,rgba(0,0,0,0.05),transparent_60%)]" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
-      <div className="max-w-6xl mx-auto">
-        {/* Title */}
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="text-4xl md:text-5xl font-extrabold text-center mb-4"
-        >
-          Get In{" "}
-          <span className="bg-clip-text text-transparent bg-linear-to-r from-pink-500 via-red-500 to-yellow-400">
-            Touch
-          </span>
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="text-center text-gray-300 max-w-2xl mx-auto mb-16"
-        >
-          I'm open to freelance work, collaborations, or full-time opportunities.
-          Feel free to reach out!
-        </motion.p>
-
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-14">
-          {/* Left Side — Contact Info */}
+        {/* CENTER COLUMN */}
+        <div className="mx-auto max-w-3xl px-6">
+          {/* Header */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="space-y-10"
+            className="mb-20 text-center"
           >
-            <div>
-              <h3 className="text-2xl font-semibold mb-3">
-                Let's{" "}
-                <span className="bg-clip-text text-transparent bg-linear-to-r from-pink-500 to-yellow-400">
-                  Connect
-                </span>
-              </h3>
-              <p className="text-gray-400">
-                Reach out anytime — I usually reply within 24 hours.
-              </p>
-            </div>
-
-            {/* Email */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="flex items-center gap-4"
-            >
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <Mail className="h-6 w-6 text-pink-400" />
-              </div>
-              <Link
-                href="mailto:Swarnadeeproy35@gmail.com"
-                className="text-gray-300 hover:text-white transition"
-              >
-                Swarnadeeproy35@gmail.com
-              </Link>
-            </motion.div>
-
-            {/* Phone */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="flex items-center gap-4"
-            >
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <Phone className="h-6 w-6 text-pink-400" />
-              </div>
-              <Link
-                href="tel:+917439732996"
-                className="text-gray-300 hover:text-white transition"
-              >
-                +91 74397 32996
-              </Link>
-            </motion.div>
-
-            {/* Location */}
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              className="flex items-center gap-4"
-            >
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
-                <MapPin className="h-6 w-6 text-pink-400" />
-              </div>
-              <p className="text-gray-300">Kolkata, WB, India</p>
-            </motion.div>
+            <h2 className="font-serif text-4xl md:text-6xl font-bold text-[#2b2118]">
+              Let’s Connect
+            </h2>
+            <p className="mt-4 text-[#6b5a4a]">
+              Open to opportunities, collaborations, and meaningful conversations.
+            </p>
           </motion.div>
 
-          {/* Right Side — Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+          {/* Contact Info */}
+          <div className="mb-20 space-y-8">
+            <ContactItem
+              icon={<Mail className="h-5 w-5 text-[#5c4632]" />}
+              label="Email"
+              value="Swarnadeeproy35@gmail.com"
+              href="mailto:Swarnadeeproy35@gmail.com"
+            />
+            <ContactItem
+              icon={<Phone className="h-5 w-5 text-[#5c4632]" />}
+              label="Phone"
+              value="+91 74397 32996"
+              href="tel:+917439732996"
+            />
+            <ContactItem
+              icon={<MapPin className="h-5 w-5 text-[#5c4632]" />}
+              label="Location"
+              value="Kolkata, India"
+            />
+          </div>
+
+          {/* FORM – NO CARD / NO BOX */}
+          <motion.form
+            onSubmit={handleSubmit}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-xl"
+            transition={{ duration: 0.6 }}
+            className="space-y-6"
           >
-            <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
+            <input
+              name="name"
+              required
+              placeholder="Your name"
+              className="w-full rounded-lg border border-[#2b2118]/30 bg-transparent px-4 py-3 text-[#2b2118] placeholder:text-[#6b5a4a] focus:outline-none focus:border-[#2b2118]"
+            />
 
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="name"
-                required
-                placeholder="Your Name"
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:ring-2 focus:ring-pink-500 focus:outline-none text-white"
-              />
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="Email address"
+              className="w-full rounded-lg border border-[#2b2118]/30 bg-transparent px-4 py-3 text-[#2b2118] placeholder:text-[#6b5a4a] focus:outline-none focus:border-[#2b2118]"
+            />
 
-              <input
-                type="email"
-                name="email"
-                required
-                placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:ring-2 focus:ring-pink-500 text-white"
-              />
+            <textarea
+              name="message"
+              rows={4}
+              required
+              placeholder="Your message"
+              className="w-full resize-none rounded-lg border border-[#2b2118]/30 bg-transparent px-4 py-3 text-[#2b2118] placeholder:text-[#6b5a4a] focus:outline-none focus:border-[#2b2118]"
+            />
 
-              <textarea
-                name="message"
-                rows={4}
-                required
-                placeholder="Your message..."
-                className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:ring-2 focus:ring-pink-500 text-white resize-none"
-              />
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className={cn(
-                  "w-full py-3 rounded-lg bg-linear-to-r from-pink-500 to-yellow-400 text-black font-semibold shadow-lg hover:brightness-110 transition flex items-center justify-center gap-2"
-                )}
-              >
-                {isSubmitting ? "Sending..." : "Send Message"}
-                <Send size={16} />
-              </button>
-            </form>
-          </motion.div>
+            <button
+              disabled={isSubmitting}
+              className={cn(
+                "flex w-full items-center justify-center gap-2 rounded-lg bg-[#2b2118] px-4 py-3 text-sm font-semibold text-[#f7f3ee] hover:bg-[#3a2c20] transition",
+                isSubmitting && "opacity-70"
+              )}
+            >
+              {isSubmitting ? "Sending…" : "Send Message"}
+              <Send size={16} />
+            </button>
+          </motion.form>
         </div>
-      </div>
-    </section>
+      </section>
+    </SectionWrapper>
   );
-};
+}
+
+/* --------------------------------------------
+   CONTACT ITEM
+-------------------------------------------- */
+function ContactItem({
+  icon,
+  label,
+  value,
+  href,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  href?: string;
+}) {
+  const Wrapper = href ? Link : "div";
+
+  return (
+    <motion.div whileHover={{ x: 6 }}>
+      <Wrapper
+        href={href as any}
+        className="flex items-center gap-4 text-[#6b5a4a] hover:text-[#2b2118] transition"
+      >
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#2b2118]/30">
+          {icon}
+        </div>
+        <div>
+          <p className="text-xs">{label}</p>
+          <p className="text-sm font-medium">{value}</p>
+        </div>
+      </Wrapper>
+    </motion.div>
+  );
+}

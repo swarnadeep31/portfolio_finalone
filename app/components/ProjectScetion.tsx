@@ -3,9 +3,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ExternalLink, Github, X } from "lucide-react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { ExternalLink, Github, X } from "lucide-react";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
+import SectionWrapper from "./StackedSection";
 
+/* --------------------------------------------------
+   TYPES
+-------------------------------------------------- */
 type Project = {
   id: number;
   title: string;
@@ -17,168 +21,174 @@ type Project = {
   githubUrl: string;
 };
 
+/* --------------------------------------------------
+   DATA
+-------------------------------------------------- */
 const projects: Project[] = [
   {
     id: 1,
-    title: "TypeSpeed — Real-Time Typing Trainer",
+    title: "TypeSpeed — Typing Trainer",
     description:
-      "A Monkey-Typing style typing web app built with React, TypeScript and Tailwind CSS. Adjustable test lengths, live WPM/accuracy, responsive UI.",
+      "A real-time typing practice app with live WPM, accuracy tracking, and a responsive interface.",
     image: "/projects/typing.png",
     video: "/projects/typing.mp4",
-    tags: ["React", "Tailwind CSS", "TypeScript", "Node.js"],
+    tags: ["React", "TypeScript", "Tailwind"],
     demoUrl: "https://type-speed-green.vercel.app/",
     githubUrl: "https://github.com/swarnadeep31/type-speed",
   },
   {
     id: 2,
-    title: "Esho Natok Shikhi — Drama School Website",
+    title: "Esho Natok Shikhi",
     description:
-      "A full-stack drama school website built with React, Tailwind, TypeScript and MERN. Dynamic content, responsive UI and admission forms.",
+      "A full-stack drama school platform with dynamic content and admissions workflow.",
     image: "/projects/project2.png",
     video: "/projects/esho-natok-shiki.mp4",
-    tags: ["React", "Tailwind CSS", "TypeScript", "MongoDB", "Express.js", "Node.js"],
+    tags: ["React", "TypeScript", "MongoDB", "Node"],
     demoUrl: "https://esonatakshikhi.com",
     githubUrl: "#",
   },
   {
     id: 3,
-    title: "Modern Real Estate Website",
+    title: "Modern Real Estate",
     description:
-      "A responsive real estate frontend built with React, Tailwind and TypeScript. Property listings, featured sections and subtle animations.",
+      "A modern real estate frontend showcasing listings with smooth transitions.",
     image: "/projects/realestate.png",
     video: "/projects/realestate.mp4",
-    tags: ["React", "Tailwind CSS", "TypeScript"],
+    tags: ["React", "TypeScript", "Tailwind"],
     demoUrl: "https://real-estate-awwwards.vercel.app/",
     githubUrl: "#",
   },
 ];
 
-// animations
+/* --------------------------------------------------
+   ANIMATION
+-------------------------------------------------- */
 const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  hidden: { opacity: 0, y: 32 },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: { duration: 0.5, ease: "easeOut" },
-  },
-  hover: {
-    scale: 1.02,
-    transition: { duration: 0.2, ease: "easeOut" },
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1], // ✔ TS-safe cubic bezier
+    },
   },
 };
 
-export default function  ProjectSection ()  {
-  const [openProject, setOpenProject] = useState<Project | null>(null);
+/* --------------------------------------------------
+   SECTION
+-------------------------------------------------- */
+export default function ProjectSection() {
+  const [active, setActive] = useState<Project | null>(null);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpenProject(null);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setActive(null);
+    window.addEventListener("keydown", esc);
+    return () => window.removeEventListener("keydown", esc);
   }, []);
 
   return (
-    <section id="projects" className="relative py-24 px-4 overflow-hidden">
-      {/* Background Gradient Glow */}
-      <div className="absolute inset-0 -z-10 bg-linear-to-br from-purple-900/20 via-black to-black" />
-      <div className="absolute top-10 left-0 w-[450px] h-[450px] bg-linear-to-r from-pink-500 to-yellow-400 blur-[180px] opacity-20 rounded-full" />
+    <SectionWrapper id="projects">
+      <section className="py-32">
+        {/* Paper texture */}
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(0,0,0,0.05),transparent_60%)]" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
 
-      <div className="mx-auto max-w-6xl">
-        {/* Title */}
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-extrabold text-center mb-4"
-        >
-          Featured{" "}
-          <span className="bg-clip-text text-transparent bg-linear-to-r from-pink-500 via-red-500 to-yellow-400">
-            Projects
-          </span>
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center text-gray-300 max-w-2xl mx-auto mb-16"
-        >
-          Explore my latest work — hover for preview and click to open a fullscreen demo.
-        </motion.p>
-
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          {projects.map((project) => (
-            <motion.div
-              key={project.id}
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              whileHover="hover"
-              viewport={{ once: true }}
-              className="rounded-2xl overflow-hidden bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl transition"
-            >
-              <ProjectCard project={project} onPreview={() => setOpenProject(project)} />
-            </motion.div>
-          ))}
-        </div>
-
-        {/* GitHub Button */}
-        <div className="text-center mt-14">
-          <Link
-            href="https://github.com/swarnadeep31"
-            target="_blank"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 transition"
+        <div className="mx-auto max-w-6xl px-6">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            className="mb-20 text-center"
           >
-            Check My GitHub <ArrowRight size={16} />
-          </Link>
+            <h2 className="font-serif text-4xl md:text-6xl font-bold text-[#2b2118]">
+              Selected Projects
+            </h2>
+            <p className="mt-4 mx-auto max-w-2xl text-[#6b5a4a]">
+              A curated selection of real-world work focused on clarity,
+              performance, and thoughtful design.
+            </p>
+          </motion.div>
+
+          {/* Projects */}
+          <div className="grid gap-20 md:grid-cols-2">
+            {projects.map((project) => (
+              <motion.div
+                key={project.id}
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false }}
+                className="group"
+              >
+                <ProjectItem
+                  project={project}
+                  onOpen={() => setActive(project)}
+                />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div className="mt-24 text-center">
+            <Link
+              href="https://github.com/swarnadeep31"
+              target="_blank"
+              className="inline-flex items-center gap-2 rounded-lg border border-[#2b2118]/40 px-6 py-3 text-[#2b2118] hover:bg-[#eae3da] transition"
+            >
+              View More on GitHub
+            </Link>
+          </div>
+
+          <AnimatePresence>
+            {active && (
+              <ProjectModal
+                project={active}
+                onClose={() => setActive(null)}
+              />
+            )}
+          </AnimatePresence>
         </div>
-
-        <AnimatePresence>
-          {openProject && (
-            <ModalProject project={openProject} onClose={() => setOpenProject(null)} />
-          )}
-        </AnimatePresence>
-      </div>
-    </section>
+      </section>
+    </SectionWrapper>
   );
-};
+}
 
-// ---------------------------------------------------------
-// PROJECT CARD
-// ---------------------------------------------------------
-const ProjectCard = ({
+/* --------------------------------------------------
+   PROJECT ITEM (NO CARD EFFECT)
+-------------------------------------------------- */
+function ProjectItem({
   project,
-  onPreview,
+  onOpen,
 }: {
   project: Project;
-  onPreview: () => void;
-}) => {
-  const previewRef = useRef<HTMLVideoElement | null>(null);
+  onOpen: () => void;
+}) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   return (
-    <>
-      {/* Preview */}
+    <div className="space-y-6">
+      {/* Media */}
       <div
-        className="w-full h-52 md:h-64 relative bg-black overflow-hidden rounded-t-2xl"
-        onMouseEnter={() => previewRef.current?.play()}
+        className="relative aspect-video overflow-hidden rounded-xl bg-[#eae3da]"
+        onMouseEnter={() => videoRef.current?.play()}
         onMouseLeave={() => {
-          previewRef.current?.pause();
-          if (previewRef.current) previewRef.current.currentTime = 0;
+          if (videoRef.current) {
+            videoRef.current.pause();
+            videoRef.current.currentTime = 0;
+          }
         }}
       >
         {project.video ? (
           <video
-            ref={previewRef}
+            ref={videoRef}
             src={project.video}
             muted
             loop
             playsInline
-            preload="metadata"
-            className="w-full h-full object-cover"
             poster={project.image}
+            className="h-full w-full object-cover"
           />
         ) : (
           <Image
@@ -188,122 +198,105 @@ const ProjectCard = ({
             className="object-cover"
           />
         )}
+
+        <button
+          onClick={onOpen}
+          className="absolute bottom-4 right-4 rounded-md bg-[#2b2118] px-4 py-2 text-sm text-[#f7f3ee] hover:bg-[#3a2c20] transition"
+        >
+          Preview
+        </button>
       </div>
 
-      {/* Content */}
-      <div className="p-6">
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.tags.map((tag, i) => (
+      {/* Meta */}
+      <div>
+        <div className="mb-3 flex flex-wrap gap-2">
+          {project.tags.map((tag) => (
             <span
-              key={i}
-              className="px-2 py-1 rounded-md text-xs bg-white/10 border border-white/10 text-gray-300"
+              key={tag}
+              className="text-xs text-[#6b5a4a]"
             >
               {tag}
             </span>
           ))}
         </div>
 
-        <h3 className="text-xl font-semibold text-white mb-2">{project.title}</h3>
-        <p className="text-gray-300 text-sm mb-6">{project.description}</p>
+        <h3 className="font-serif text-lg font-semibold text-[#2b2118]">
+          {project.title}
+        </h3>
 
-        <div className="flex justify-between items-center">
-          <div className="flex space-x-4">
-            <Link href={project.demoUrl} target="_blank" className="text-gray-300 hover:text-white transition">
-              <ExternalLink size={20} />
+        <p className="mt-2 max-w-xl text-sm text-[#6b5a4a]">
+          {project.description}
+        </p>
+
+        <div className="mt-4 flex gap-4">
+          <Link href={project.demoUrl} target="_blank">
+            <ExternalLink size={18} />
+          </Link>
+          {project.githubUrl !== "#" && (
+            <Link href={project.githubUrl} target="_blank">
+              <Github size={18} />
             </Link>
-            {project.githubUrl !== "#" && (
-              <Link href={project.githubUrl} target="_blank" className="text-gray-300 hover:text-white transition">
-                <Github size={20} />
-              </Link>
-            )}
-          </div>
-
-          <button
-            onClick={onPreview}
-            className="px-4 py-2 rounded-lg bg-linear-to-r from-pink-500 to-yellow-400 text-black font-medium hover:brightness-110 transition"
-          >
-            Preview Demo
-          </button>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
-};
+}
 
-// ---------------------------------------------------------
-// MODAL
-// ---------------------------------------------------------
-const ModalProject = ({
+/* --------------------------------------------------
+   MODAL
+-------------------------------------------------- */
+function ProjectModal({
   project,
   onClose,
 }: {
   project: Project;
   onClose: () => void;
-}) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [muted, setMuted] = useState(true);
-
+}) {
   return (
-    <AnimatePresence>
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
       <motion.div
-        className="fixed inset-0 z-100 flex items-center justify-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
+        onClick={(e) => e.stopPropagation()}
+        initial={{ scale: 0.96 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.96 }}
+        className="relative mx-4 w-full max-w-5xl overflow-hidden rounded-2xl bg-[#f7f3ee]"
       >
-        {/* Dark glass backdrop */}
-        <div className="absolute inset-0 bg-black/70 backdrop-blur-lg"></div>
-
-        <motion.div
-          onClick={(e) => e.stopPropagation()}
-          initial={{ scale: 0.95 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0.95 }}
-          className="relative w-full max-w-5xl mx-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 z-10 rounded-full border border-[#2b2118]/40 p-2 hover:bg-[#eae3da]"
         >
-          {/* Controls */}
-          <div className="absolute top-4 right-4 z-50 flex gap-2">
-            <button
-              onClick={() => setMuted((m) => !m)}
-              className="px-3 py-1 rounded-md bg-white/10 text-gray-200"
-            >
-              {muted ? "Muted" : "Sound"}
-            </button>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition"
-            >
-              <X size={18} className="text-white" />
-            </button>
-          </div>
+          <X size={18} />
+        </button>
 
-          {/* Video */}
-          <div className="w-full h-[75vh] bg-black">
-            {project.video ? (
-              <video
-                ref={videoRef}
-                src={project.video}
-                autoPlay
-                loop
-                muted={muted}
-                controls
-                playsInline
-                className="w-full h-full object-contain"
-              />
-            ) : (
-              <Image src={project.image!} alt={project.title} fill className="object-contain" />
-            )}
-          </div>
-
-          {/* Info */}
-          <div className="p-6 bg-white/5 border-t border-white/10">
-            <h3 className="text-lg font-semibold text-white">{project.title}</h3>
-            <p className="text-gray-300 mt-2">{project.description}</p>
-          </div>
-        </motion.div>
+        <div className="h-[70vh] bg-[#eae3da]">
+          {project.video ? (
+            <video
+              src={project.video}
+              autoPlay
+              loop
+              controls
+              playsInline
+              className="h-full w-full object-contain"
+            />
+          ) : (
+            <Image
+              src={project.image!}
+              fill
+              alt={project.title}
+              className="object-contain"
+            />
+          )}
+        </div>
       </motion.div>
-    </AnimatePresence>
+    </motion.div>
   );
-};
+}

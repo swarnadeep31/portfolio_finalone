@@ -13,91 +13,152 @@ const navItems = [
   { name: "Contact", href: "#contact" },
 ];
 
-export const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<string>("");
 
+  /* ---------------- SCROLL STATE ---------------- */
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+
+      // Active section detection
+      const sections = navItems.map((i) =>
+        document.querySelector(i.href)
+      );
+      const scrollPos = window.scrollY + 120;
+
+      sections.forEach((sec, i) => {
+        if (!sec) return;
+        const top = (sec as HTMLElement).offsetTop;
+        const height = (sec as HTMLElement).offsetHeight;
+        if (scrollPos >= top && scrollPos < top + height) {
+          setActive(navItems[i].href);
+        }
+      });
+    };
+
     window.addEventListener("scroll", onScroll);
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* ---------------- LOCK BODY SCROLL (MOBILE) ---------------- */
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
     <motion.nav
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0, transition: { duration: 0.6 } }}
+      initial={{ opacity: 0, y: -16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
-        "fixed top-0 left-0 w-full z-50 transition-all duration-300",
-        isScrolled
-          ? "py-3 bg-black/40 backdrop-blur-xl shadow-lg border-b border-white/10"
-          : "py-6 bg-transparent"
+        "fixed inset-x-0 top-0 z-50 transition-all",
+        scrolled
+          ? "bg-[#f7f3ee]/80 backdrop-blur-xl border-b border-[#2b2118]/15"
+          : "bg-transparent"
       )}
     >
-      <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
-        {/* Logo */}
-        <a
-          href="#hero"
-          className="text-xl md:text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-pink-500 via-red-500 to-yellow-400"
+      <div className="mx-auto max-w-6xl px-6">
+        <div
+          className={cn(
+            "flex items-center justify-between transition-all",
+            scrolled ? "py-3" : "py-6"
+          )}
         >
-          Swarnadeep
-        </a>
+          {/* Brand */}
+          <a
+            href="#hero"
+            className="font-serif text-lg md:text-xl font-semibold tracking-tight text-[#2b2118]"
+          >
+            Swarnadeep
+          </a>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center space-x-8">
-          {navItems.map((link, i) => (
-            <motion.a
-              key={i}
-              href={link.href}
-              className="relative text-sm font-medium text-white/70 hover:text-white transition"
-              whileHover={{ y: -2 }}
-            >
-              {link.name}
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-8">
+            {navItems.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "relative text-sm font-medium transition",
+                  active === item.href
+                    ? "text-[#2b2118]"
+                    : "text-[#6b5a4a] hover:text-[#2b2118]"
+                )}
+              >
+                {item.name}
 
-              {/* Animated underline */}
-              <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-linear-to-r from-pink-500 to-yellow-400 transition-all duration-300 group-hover:w-full"></span>
-            </motion.a>
-          ))}
+                {/* Active underline */}
+                <span
+                  className={cn(
+                    "absolute left-0 -bottom-1 h-px bg-[#2b2118] transition-all duration-300",
+                    active === item.href ? "w-full" : "w-0"
+                  )}
+                />
+              </a>
+            ))}
+          </div>
+
+          {/* Mobile Button */}
+          <button
+            onClick={() => setOpen(true)}
+            aria-label="Open menu"
+            className="md:hidden flex h-11 w-11 items-center justify-center rounded-full border border-[#2b2118]/40 text-[#2b2118] hover:bg-[#eae3da] transition"
+          >
+            <Menu size={22} />
+          </button>
         </div>
+      </div>
 
-        {/* Mobile Toggle Button */}
-        <button
-          onClick={() => setIsMenuOpen((p) => !p)}
-          aria-label="Open menu"
-          className="md:hidden p-2 text-white"
-        >
-          {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
-        </button>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/70 backdrop-blur-xl flex flex-col items-center justify-center space-y-10 z-40"
+      {/* ---------------- MOBILE MENU ---------------- */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-[#f7f3ee]/95 backdrop-blur-xl"
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Close menu"
+              className="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-full border border-[#2b2118]/40 text-[#2b2118] hover:bg-[#eae3da] transition"
             >
-              {navItems.map((link, i) => (
+              <X size={22} />
+            </button>
+
+            {/* Menu Items */}
+            <div className="flex h-full flex-col items-center justify-center gap-10">
+              {navItems.map((item, i) => (
                 <motion.a
-                  key={i}
-                  href={link.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  initial={{ opacity: 0, y: 20 }}
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  initial={{ opacity: 0, y: 24 }}
                   animate={{
                     opacity: 1,
                     y: 0,
-                    transition: { delay: i * 0.08 },
+                    transition: {
+                      delay: i * 0.08,
+                      ease: [0.22, 1, 0.36, 1],
+                    },
                   }}
-                  className="text-3xl font-semibold text-white hover:text-transparent bg-clip-text bg-linear-to-r from-pink-500 via-red-500 to-yellow-400 transition"
+                  className="font-serif text-3xl font-semibold text-[#2b2118] hover:text-[#5c4632] transition"
                 >
-                  {link.name}
+                  {item.name}
                 </motion.a>
               ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
-};
+}

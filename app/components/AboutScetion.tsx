@@ -1,107 +1,119 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import Link from "next/link";
 import { Briefcase, Code, User } from "lucide-react";
+import SectionWrapper from "./StackedSection";
 
-export const AboutSection = () => {
-  return (
-    <section id="about" className="relative py-28 overflow-hidden px-6">
-      {/* Background Glow */}
-      <div className="absolute inset-0 -z-10 bg-linear-to-br from-purple-900/20 via-black to-black" />
-      <div className="absolute top-10 right-0 w-[500px] h-[500px] bg-linear-to-br from-pink-500 to-yellow-400 rounded-full blur-[180px] opacity-20" />
-
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-        {/* Left Text Block */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="space-y-6"
-        >
-          <h2 className="text-4xl md:text-5xl font-extrabold">
-            About{" "}
-            <span className="bg-clip-text text-transparent bg-linear-to-r from-pink-500 via-red-500 to-yellow-400">
-              Me
-            </span>
-          </h2>
-
-          <p className="text-gray-300 leading-relaxed">
-            I'm a passionate frontend developer specializing in modern web
-            technologies. I love building smooth, aesthetic, and deeply
-            interactive user experiences using React, TypeScript, and Tailwind
-            CSS.
-          </p>
-
-          <p className="text-gray-300 leading-relaxed">
-            When I’m not coding, I enjoy gaming, exploring UI/UX inspiration,
-            and continuously learning new technologies to sharpen my craft.
-          </p>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <Link href="#contact" className="px-6 py-3 rounded-full bg-linear-to-r from-pink-500 to-yellow-400 text-black font-semibold shadow-lg hover:scale-[1.03] transition">
-              Get In Touch
-            </Link>
-
-            <Link
-              href="https://drive.google.com/file/d/1kqOx5FgZG3I2JU50iJG9TtOUloRxk-Nm/view?usp=sharing"
-              target="_blank"
-              className="px-6 py-3 rounded-full border border-white/20 text-white hover:bg-white/10 transition"
-            >
-              Download CV
-            </Link>
-          </div>
-        </motion.div>
-
-        {/* Right Floating Cards */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="grid gap-6"
-        >
-          {[
-            {
-              title: "Web Development",
-              desc: "Building sleek, responsive, and modern interfaces with React, TypeScript, and Tailwind CSS.",
-              icon: <Code className="h-6 w-6 text-pink-400" />,
-            },
-            {
-              title: "Computer Science Student",
-              desc: "MCA student focusing on software engineering, algorithms, and real-world application development.",
-              icon: <User className="h-6 w-6 text-pink-400" />,
-            },
-            {
-              title: "Projects & Experience",
-              desc: "Hands-on experience building full-stack and real-world production-grade applications.",
-              icon: <Briefcase className="h-6 w-6 text-pink-400" />,
-            },
-          ].map((card, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              whileHover={{ scale: 1.03 }}
-              className="p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-xl"
-            >
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-white/10">{card.icon}</div>
-                <div>
-                  <h4 className="text-lg font-semibold text-white">
-                    {card.title}
-                  </h4>
-                  <p className="text-gray-300 text-sm mt-1">{card.desc}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </section>
-  );
+/* --------------------------------------------
+   Animations (TS-safe)
+-------------------------------------------- */
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.08,
+      duration: 0.5,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
 };
+
+export default function AboutSection() {
+  return (
+    <SectionWrapper id="about">
+      <section className="py-32">
+        <div className="mx-auto max-w-6xl px-6 grid gap-20 lg:grid-cols-2 items-start">
+          {/* TEXT */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.7 }}
+            className="space-y-8"
+          >
+            <h2 className="font-serif text-4xl md:text-6xl font-bold text-[#2b2118]">
+              Crafting Digital
+              <br />
+              Experiences
+            </h2>
+
+            <p className="max-w-xl leading-relaxed text-[#6b5a4a]">
+              I’m a frontend developer who enjoys transforming ideas into
+              elegant, intuitive interfaces with a strong focus on clarity,
+              performance, and usability.
+            </p>
+
+            <p className="max-w-xl leading-relaxed text-[#6b5a4a]">
+              I work with modern frontend stacks, design systems, and subtle
+              animations to create products that feel refined and purposeful.
+            </p>
+
+            <div className="flex flex-wrap gap-4 pt-2">
+              <Link
+                href="#contact"
+                className="rounded-lg bg-[#2b2118] px-6 py-3 text-sm font-semibold text-[#f7f3ee] hover:bg-[#3a2c20] transition"
+              >
+                Contact Me
+              </Link>
+
+              <Link
+                href="#"
+                className="rounded-lg border border-[#2b2118]/40 px-6 py-3 text-sm text-[#2b2118] hover:bg-[#eae3da] transition"
+              >
+                View Resume
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* FLAT LIST (NO CARDS) */}
+          <motion.ul
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false }}
+            className="space-y-6"
+          >
+            {[
+              {
+                title: "Frontend Engineering",
+                desc: "Modern, scalable UI development using React, TypeScript, and Tailwind.",
+                icon: <Code className="h-5 w-5" />,
+              },
+              {
+                title: "Computer Science",
+                desc: "Strong foundation in software engineering and problem-solving.",
+                icon: <User className="h-5 w-5" />,
+              },
+              {
+                title: "Real Projects",
+                desc: "Hands-on experience building and shipping production-ready applications.",
+                icon: <Briefcase className="h-5 w-5" />,
+              },
+            ].map((item, i) => (
+              <motion.li
+                key={i}
+                custom={i}
+                variants={itemVariants}
+                className="flex gap-4 border-b border-[#2b2118]/15 pb-6"
+              >
+                <div className="mt-1 text-[#5c4632]">
+                  {item.icon}
+                </div>
+                <div>
+                  <h4 className="font-serif text-lg font-semibold text-[#2b2118]">
+                    {item.title}
+                  </h4>
+                  <p className="mt-1 text-sm text-[#6b5a4a]">
+                    {item.desc}
+                  </p>
+                </div>
+              </motion.li>
+            ))}
+          </motion.ul>
+        </div>
+      </section>
+    </SectionWrapper>
+  );
+}

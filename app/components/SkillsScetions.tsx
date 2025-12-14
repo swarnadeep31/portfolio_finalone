@@ -1,112 +1,119 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { cn } from "../lib/utils";
+import SectionWrapper from "./StackedSection";
 
 const skills = [
-  // Frontend
   { name: "HTML / CSS", category: "frontend" },
   { name: "JavaScript", category: "frontend" },
   { name: "React", category: "frontend" },
   { name: "TypeScript", category: "frontend" },
   { name: "Tailwind CSS", category: "frontend" },
-
-  // Backend
   { name: "MongoDB", category: "backend" },
   { name: "SQL", category: "backend" },
-
-  // Tools
   { name: "Git & GitHub", category: "tools" },
   { name: "Figma", category: "tools" },
   { name: "VS Code", category: "tools" },
 ];
 
-const categories = ["all", "frontend", "backend", "tools"];
+const categories = ["all", "frontend", "backend", "tools"] as const;
 
-export default function SkillsScetions () {
-  const [activeCategory, setActiveCategory] = useState("all");
+/* --------------------------------------------
+   Animations (TS-safe)
+-------------------------------------------- */
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.05,
+      duration: 0.45,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
+};
 
-  const filteredSkills = skills.filter((skill) =>
-    activeCategory === "all" ? true : skill.category === activeCategory
+export default function SkillsSection() {
+  const [active, setActive] =
+    useState<(typeof categories)[number]>("all");
+
+  const visible = skills.filter(
+    (s) => active === "all" || s.category === active
   );
 
   return (
-    <section id="skills" className="py-24 relative overflow-hidden">
-      {/* Background Accent Glow */}
-      <div className="absolute inset-0 -z-10 bg-linear-to-br from-purple-900/20 via-black to-black" />
-      <div className="absolute -top-40 right-0 w-72 h-72 bg-linear-to-br from-pink-500 to-yellow-400 rounded-full blur-[160px] opacity-20" />
+    <SectionWrapper id="skills">
+      <section className="py-32">
+        <div className="mx-auto max-w-6xl px-6">
+          {/* HEADER */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.7 }}
+            className="mb-20 text-center"
+          >
+            <h2 className="font-serif text-4xl md:text-6xl font-bold text-[#2b2118]">
+              Skills & Tools
+            </h2>
+            <p className="mt-4 mx-auto max-w-2xl text-[#6b5a4a]">
+              Technologies I use to design and build thoughtful, modern web
+              experiences.
+            </p>
+          </motion.div>
 
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Title */}
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-extrabold text-center mb-12"
-        >
-          My{" "}
-          <span className="bg-clip-text text-transparent bg-linear-to-r from-pink-500 via-red-500 to-yellow-400">
-            Skills
-          </span>
-        </motion.h2>
+          {/* FILTERS */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.5 }}
+            className="mb-16 flex flex-wrap justify-center gap-3"
+          >
+            {categories.map((c) => (
+              <button
+                key={c}
+                onClick={() => setActive(c)}
+                className={cn(
+                  "rounded-md px-4 py-2 text-sm font-medium capitalize transition",
+                  active === c
+                    ? "bg-[#2b2118] text-[#f7f3ee]"
+                    : "text-[#2b2118] border border-[#2b2118]/30 hover:bg-[#eae3da]"
+                )}
+              >
+                {c}
+              </button>
+            ))}
+          </motion.div>
 
-        {/* Category Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-wrap justify-center gap-4 mb-14"
-        >
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={cn(
-                "px-5 py-2 rounded-full capitalize font-medium text-sm transition-all",
-                activeCategory === category
-                  ? "bg-linear-to-r from-pink-500 to-yellow-400 text-black shadow-lg scale-105"
-                  : "bg-white/5 text-white/80 hover:bg-white/10"
-              )}
-            >
-              {category}
-            </button>
-          ))}
-        </motion.div>
-
-        {/* Skills Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredSkills.map((skill, index) => (
-            <motion.div
-              key={skill.name}
-              initial={{ opacity: 0, y: 20, scale: 0.98 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: index * 0.05 }}
-              whileHover={{ scale: 1.03 }}
-              className="relative bg-white/5 backdrop-blur-xl p-6 rounded-xl border border-white/10 shadow-xl group overflow-hidden"
-            >
-              {/* Gradient Hover Glow */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-linear-to-r from-pink-500/20 via-red-500/20 to-yellow-400/20 transition-opacity duration-500"></div>
-
-              <h3 className="relative font-semibold text-lg text-white mb-3">
-                {skill.name}
-              </h3>
-
-              {/* <div className="relative w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                <motion.div
-                  className="h-full bg-linear-to-r from-pink-500 to-yellow-400"
-                  initial={{ width: 0 }}
-        
-                  transition={{ duration: 1.2, delay: 0.2 }}
-                />
-              </div> */}
-            </motion.div>
-          ))}
+          {/* SKILLS LIST (NO CARDS) */}
+          <motion.ul
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false }}
+            className="grid gap-x-12 gap-y-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {visible.map((skill, i) => (
+              <motion.li
+                key={skill.name}
+                custom={i}
+                variants={itemVariants}
+                className="flex items-baseline justify-between border-b border-[#2b2118]/15 pb-3"
+              >
+                <span className="font-serif text-lg font-semibold text-[#2b2118]">
+                  {skill.name}
+                </span>
+                <span className="text-xs uppercase tracking-wide text-[#6b5a4a]">
+                  {skill.category}
+                </span>
+              </motion.li>
+            ))}
+          </motion.ul>
         </div>
-      </div>
-    </section>
+      </section>
+    </SectionWrapper>
   );
-};
+}
