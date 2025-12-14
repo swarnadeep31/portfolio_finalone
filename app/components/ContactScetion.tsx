@@ -1,16 +1,80 @@
 "use client";
 
 import Link from "next/link";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, X } from "lucide-react";
 import { cn } from "../lib/utils";
-import { useToast } from "../hooks/use-toast";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import SectionWrapper from "./StackedSection";
 
+/* --------------------------------------------
+   Floating Toast (Modal Style)
+-------------------------------------------- */
+function FloatingToast({
+  show,
+  title,
+  description,
+  type = "success",
+  onClose,
+}: {
+  show: boolean;
+  title: string;
+  description: string;
+  type?: "success" | "error";
+  onClose: () => void;
+}) {
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, y: -20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+          transition={{ duration: 0.25 }}
+          className="fixed top-6 left-1/2 z-999 w-[90%] max-w-md -translate-x-1/2 rounded-xl border bg-white px-5 py-4 shadow-2xl"
+        >
+          <div className="flex items-start gap-3">
+            <span className={cn(
+              "mt-1 text-lg",
+              type === "success" ? "text-green-600" : "text-red-600"
+            )}>
+              {type === "success" ? "✅" : "❌"}
+            </span>
+
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900">{title}</p>
+              <p className="text-sm text-gray-600">{description}</p>
+            </div>
+
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* --------------------------------------------
+   Contact Section
+-------------------------------------------- */
 export default function ContactSection() {
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toast, setToast] = useState<{
+    show: boolean;
+    title: string;
+    description: string;
+    type: "success" | "error";
+  }>({
+    show: false,
+    title: "",
+    description: "",
+    type: "success",
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,9 +84,9 @@ export default function ContactSection() {
     const formData = new FormData(form);
 
     const payload = {
-      name: formData.get("name") as string,
-      email: formData.get("email") as string,
-      message: formData.get("message") as string,
+      name: formData.get("name"),
+      email: formData.get("email"),
+      message: formData.get("message"),
     };
 
     try {
@@ -32,35 +96,45 @@ export default function ContactSection() {
         body: JSON.stringify(payload),
       });
 
-      if (res.ok) {
-        toast({
-          title: "Message sent",
-          description: "Thanks for reaching out. I’ll reply shortly.",
-        });
-        form.reset();
-      } else {
-        throw new Error("Failed");
-      }
+      if (!res.ok) throw new Error("Failed");
+
+      setToast({
+        show: true,
+        title: "Message sent",
+        description: "Thanks for reaching out. I’ll reply shortly.",
+        type: "success",
+      });
+
+      form.reset();
     } catch {
-      toast({
+      setToast({
+        show: true,
         title: "Something went wrong",
         description: "Please try again later.",
-        variant: "destructive",
+        type: "error",
       });
     } finally {
       setIsSubmitting(false);
+      setTimeout(() => {
+        setToast((t) => ({ ...t, show: false }));
+      }, 3000);
     }
   };
 
   return (
     <SectionWrapper id="contact">
-      <section className="relative bg-[#f7f3ee] py-32">
-        {/* Paper texture */}
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom,rgba(0,0,0,0.05),transparent_60%)]" />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
+      {/* Floating Toast */}
+      <FloatingToast
+        show={toast.show}
+        title={toast.title}
+        description={toast.description}
+        type={toast.type}
+        onClose={() => setToast((t) => ({ ...t, show: false }))}
+      />
 
-        {/* CENTER COLUMN */}
+      <section className="relative bg-[#f7f3ee] py-32">
         <div className="mx-auto max-w-3xl px-6">
+
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -81,8 +155,8 @@ export default function ContactSection() {
             <ContactItem
               icon={<Mail className="h-5 w-5 text-[#5c4632]" />}
               label="Email"
-              value="Swarnadeeproy35@gmail.com"
-              href="mailto:Swarnadeeproy35@gmail.com"
+              value="swarnadeeproy35@gmail.com"
+              href="mailto:swarnadeeproy35@gmail.com"
             />
             <ContactItem
               icon={<Phone className="h-5 w-5 text-[#5c4632]" />}
@@ -97,46 +171,27 @@ export default function ContactSection() {
             />
           </div>
 
-          {/* FORM – NO CARD / NO BOX */}
+          {/* Form */}
           <motion.form
             onSubmit={handleSubmit}
+            className="space-y-6"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="space-y-6"
           >
-            <input
-              name="name"
-              required
-              placeholder="Your name"
-              className="w-full rounded-lg border border-[#2b2118]/30 bg-transparent px-4 py-3 text-[#2b2118] placeholder:text-[#6b5a4a] focus:outline-none focus:border-[#2b2118]"
-            />
-
-            <input
-              type="email"
-              name="email"
-              required
-              placeholder="Email address"
-              className="w-full rounded-lg border border-[#2b2118]/30 bg-transparent px-4 py-3 text-[#2b2118] placeholder:text-[#6b5a4a] focus:outline-none focus:border-[#2b2118]"
-            />
-
-            <textarea
-              name="message"
-              rows={4}
-              required
-              placeholder="Your message"
-              className="w-full resize-none rounded-lg border border-[#2b2118]/30 bg-transparent px-4 py-3 text-[#2b2118] placeholder:text-[#6b5a4a] focus:outline-none focus:border-[#2b2118]"
-            />
+            <input name="name" required placeholder="Your name" className="w-full rounded-lg border px-4 py-3" />
+            <input type="email" name="email" required placeholder="Email address" className="w-full rounded-lg border px-4 py-3" />
+            <textarea name="message" rows={4} required placeholder="Your message" className="w-full rounded-lg border px-4 py-3" />
 
             <button
+              type="submit"
               disabled={isSubmitting}
               className={cn(
-                "flex w-full items-center justify-center gap-2 rounded-lg bg-[#2b2118] px-4 py-3 text-sm font-semibold text-[#f7f3ee] hover:bg-[#3a2c20] transition",
-                isSubmitting && "opacity-70"
+                "flex w-full items-center justify-center gap-2 rounded-lg bg-[#2b2118] px-4 py-3 text-sm font-semibold text-white transition",
+                isSubmitting && "opacity-70 cursor-not-allowed"
               )}
             >
-              {isSubmitting ? "Sending…" : "Send Message"}
+              {isSubmitting ? "Sending..." : "Send Message"}
               <Send size={16} />
             </button>
           </motion.form>
@@ -147,7 +202,7 @@ export default function ContactSection() {
 }
 
 /* --------------------------------------------
-   CONTACT ITEM
+   Contact Item
 -------------------------------------------- */
 function ContactItem({
   icon,
@@ -166,9 +221,9 @@ function ContactItem({
     <motion.div whileHover={{ x: 6 }}>
       <Wrapper
         href={href as any}
-        className="flex items-center gap-4 text-[#6b5a4a] hover:text-[#2b2118] transition"
+        className="flex items-center gap-4 transition hover:text-[#2b2118]"
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#2b2118]/30">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl border">
           {icon}
         </div>
         <div>

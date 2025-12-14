@@ -1,95 +1,95 @@
 import { Resend } from "resend";
 import React from "react";
+import { NextResponse } from "next/server";
 
-// ✅ Email template
+/* --------------------------------------------
+   Email Template
+-------------------------------------------- */
 const EmailTemplate: React.FC<{
   firstName: string;
-  email?: string;
-  message?: string;
+  email: string;
+  message: string;
 }> = ({ firstName, email, message }) => (
   <div
     style={{
       fontFamily:
-        "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
-    }}
-  >
-    <h1 style={{ marginBottom: 8 }}>Hello, {firstName}!</h1>
-    <p style={{ marginBottom: 12 }}>
-      You received a new message from your website contact form.
+        "system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial",
+      lineHeight: 1.6,
+    }}>
+    <h2>Hello 👋</h2>
+
+    <p>You received a new message from your website contact form.</p>
+
+    <p>
+      <strong>Name:</strong> {firstName}
+      <br />
+      <strong>Email:</strong> {email}
     </p>
 
-    {email && (
-      <div style={{ marginBottom: 8 }}>
-        <strong>From:</strong> {firstName} &lt;{email}&gt;
-      </div>
-    )}
+    <p>
+      <strong>Message:</strong>
+    </p>
 
-    {message && (
-      <div>
-        <strong>Message:</strong>
-        <div style={{ marginTop: 6, whiteSpace: "pre-wrap" }}>{message}</div>
-      </div>
-    )}
+    <div
+      style={{
+        padding: "12px",
+        border: "1px solid #ddd",
+        borderRadius: "6px",
+        whiteSpace: "pre-wrap",
+      }}>
+      {message}
+    </div>
 
-    <hr style={{ margin: "12px 0" }} />
-    <small>This email was sent from your website contact form.</small>
+    <hr style={{ margin: "20px 0" }} />
+
+    <small>This email was sent from your portfolio website.</small>
   </div>
 );
 
-// ✅ Initialize Resend
+/* --------------------------------------------
+   Resend Setup
+-------------------------------------------- */
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM =
-  process.env.FROM_EMAIL?.trim() || "Your Site <no-reply@yourdomain.com>";
-const TO = process.env.TO_EMAIL?.split(",").map((t) => t.trim()) || [
+const FROM = process.env.FROM_EMAIL || "Portfolio <onboarding@resend.dev>";
+const TO = process.env.TO_EMAIL?.split(",").map((e) => e.trim()) || [
   "your-email@example.com",
 ];
 
-// ✅ Handle POST requests
+/* --------------------------------------------
+   POST Handler
+-------------------------------------------- */
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { name, email, message } = body;
+    const { name, email, message } = await req.json();
 
     if (!name || !email || !message) {
-      return new Response(
-        JSON.stringify({ error: "Missing required fields" }),
-        {
-          status: 400,
-        }
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
       );
     }
 
-    const reactBody = React.createElement(EmailTemplate, {
-      firstName: name,
-      email,
-      message,
-    });
-
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: FROM,
       to: TO,
-      subject: `New contact form message from ${name}`,
-      react: reactBody,
+      subject: `New contact message from ${name}`,
+      react: <EmailTemplate firstName={name} email={email} message={message} />,
     });
 
     if (error) {
-      console.error("Resend API Error:", error);
-      return new Response(JSON.stringify({ error: "Email failed to send" }), {
-        status: 500,
-      });
+      console.error("Resend error:", error);
+      return NextResponse.json(
+        { error: "Failed to send email" },
+        { status: 500 }
+      );
     }
 
-    return new Response(JSON.stringify({ success: true, data }), {
-      status: 200,
-    });
+    return NextResponse.json({ success: true });
   } catch (err: any) {
-    console.error("Server Error:", err);
-    return new Response(
-      JSON.stringify({
-        error: "Failed to send email",
-        details: err?.message || "Unknown error",
-      }),
+    console.error("Server error:", err);
+    return NextResponse.json(
+      { error: "Server error", details: err?.message },
       { status: 500 }
     );
   }

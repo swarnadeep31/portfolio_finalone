@@ -40,7 +40,7 @@ export default function Footer() {
                 icon: <Instagram size={18} />,
               },
               {
-                href: "https://www.facebook.com/",
+                href: "https://www.facebook.com/swarnadeep.roy.90/",
                 icon: <Facebook size={18} />,
               },
             ].map((item, i) => (
