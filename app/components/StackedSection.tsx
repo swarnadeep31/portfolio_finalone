@@ -1,32 +1,39 @@
 "use client";
 
-import { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { ReactNode } from "react";
 import { cn } from "../lib/utils";
 
-let zIndexCounter = 10;
+type SectionWrapperProps = {
+  id?: string;
+  children: ReactNode;
+  className?: string;
+};
 
 export default function SectionWrapper({
-  children,
   id,
+  children,
   className,
-}: {
-  children: ReactNode;
-  id?: string;
-  className?: string;
-}) {
-  const zIndex = zIndexCounter++;
-
+}: SectionWrapperProps) {
   return (
     <motion.section
       id={id}
-      style={{ zIndex }}
-      initial={{ y: 80, opacity: 0 }}
-      whileInView={{ y: 0, opacity: 1 }}
+      initial="hidden"
+      whileInView="visible"
       viewport={{ once: false, margin: "-120px" }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      variants={{
+        hidden: { opacity: 0, y: 80 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: {
+            duration: 0.8,
+            ease: [0.22, 1, 0.36, 1],
+          },
+        },
+      }}
       className={cn(
-        "relative -mt-32 bg-[#f7f3ee]",
+        "relative -mt-32 bg-[#f7f3ee]", // overlap via margin
         className
       )}
     >

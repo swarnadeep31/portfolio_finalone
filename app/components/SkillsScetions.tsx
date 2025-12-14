@@ -21,16 +21,16 @@ const skills = [
 const categories = ["all", "frontend", "backend", "tools"] as const;
 
 /* --------------------------------------------
-   Animations (TS-safe)
+   Animations (FILTER SAFE)
 -------------------------------------------- */
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 16 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
     transition: {
       delay: i * 0.05,
-      duration: 0.45,
+      duration: 0.4,
       ease: [0.22, 1, 0.36, 1],
     },
   }),
@@ -52,7 +52,7 @@ export default function SkillsSection() {
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
+            viewport={{ once: true }}
             transition={{ duration: 0.7 }}
             className="mb-20 text-center"
           >
@@ -66,13 +66,7 @@ export default function SkillsSection() {
           </motion.div>
 
           {/* FILTERS */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.5 }}
-            className="mb-16 flex flex-wrap justify-center gap-3"
-          >
+          <div className="mb-16 flex flex-wrap justify-center gap-3">
             {categories.map((c) => (
               <button
                 key={c}
@@ -81,19 +75,19 @@ export default function SkillsSection() {
                   "rounded-md px-4 py-2 text-sm font-medium capitalize transition",
                   active === c
                     ? "bg-[#2b2118] text-[#f7f3ee]"
-                    : "text-[#2b2118] border border-[#2b2118]/30 hover:bg-[#eae3da]"
+                    : "border border-[#2b2118]/30 text-[#2b2118] hover:bg-[#eae3da]"
                 )}
               >
                 {c}
               </button>
             ))}
-          </motion.div>
+          </div>
 
-          {/* SKILLS LIST (NO CARDS) */}
+          {/* SKILLS LIST */}
           <motion.ul
+            key={active}                 // 🔥 THIS IS THE FIX
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: false }}
+            animate="visible"
             className="grid gap-x-12 gap-y-6 sm:grid-cols-2 lg:grid-cols-3"
           >
             {visible.map((skill, i) => (
