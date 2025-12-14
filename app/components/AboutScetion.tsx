@@ -32,8 +32,7 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
             transition={{ duration: 0.7 }}
-            className="space-y-8"
-          >
+            className="space-y-8">
             <h2 className="font-serif text-4xl md:text-6xl font-bold text-[#2b2118]">
               Crafting Digital
               <br />
@@ -53,16 +52,14 @@ export default function AboutSection() {
 
             <div className="flex flex-wrap gap-4 pt-2">
               <Link
-                href="#contact"
-                className="rounded-lg bg-[#2b2118] px-6 py-3 text-sm font-semibold text-[#f7f3ee] hover:bg-[#3a2c20] transition"
-              >
+                href="mailto:swarnadeeproy35@gmail.com"
+                className="rounded-lg bg-[#2b2118] px-6 py-3 text-sm font-semibold text-[#f7f3ee] hover:bg-[#3a2c20] transition">
                 Contact Me
               </Link>
 
               <Link
-                href="#"
-                className="rounded-lg border border-[#2b2118]/40 px-6 py-3 text-sm text-[#2b2118] hover:bg-[#eae3da] transition"
-              >
+                href="https://drive.google.com/file/d/1C174IFlvkl8aoq5v5XW9nlKYtfPdSvcZ/view?usp=sharing"
+                className="rounded-lg border border-[#2b2118]/40 px-6 py-3 text-sm text-[#2b2118] hover:bg-[#eae3da] transition">
                 View Resume
               </Link>
             </div>
@@ -73,8 +70,7 @@ export default function AboutSection() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: false }}
-            className="space-y-6"
-          >
+            className="space-y-6">
             {[
               {
                 title: "Frontend Engineering",
@@ -96,18 +92,13 @@ export default function AboutSection() {
                 key={i}
                 custom={i}
                 variants={itemVariants}
-                className="flex gap-4 border-b border-[#2b2118]/15 pb-6"
-              >
-                <div className="mt-1 text-[#5c4632]">
-                  {item.icon}
-                </div>
+                className="flex gap-4 border-b border-[#2b2118]/15 pb-6">
+                <div className="mt-1 text-[#5c4632]">{item.icon}</div>
                 <div>
                   <h4 className="font-serif text-lg font-semibold text-[#2b2118]">
                     {item.title}
                   </h4>
-                  <p className="mt-1 text-sm text-[#6b5a4a]">
-                    {item.desc}
-                  </p>
+                  <p className="mt-1 text-sm text-[#6b5a4a]">{item.desc}</p>
                 </div>
               </motion.li>
             ))}
