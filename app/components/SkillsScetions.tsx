@@ -46,7 +46,7 @@ export default function SkillsSection() {
 
   return (
     <SectionWrapper id="skills">
-      <section className="py-32">
+      <div className="py-32">
         <div className="mx-auto max-w-6xl px-6">
           {/* HEADER */}
           <motion.div
@@ -107,7 +107,7 @@ export default function SkillsSection() {
             ))}
           </motion.ul>
         </div>
-      </section>
+      </div>
     </SectionWrapper>
   );
 }

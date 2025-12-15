@@ -16,39 +16,48 @@ const navItems = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState<string>("");
+  const [active, setActive] = useState("#hero");
 
-  /* ---------------- SCROLL STATE ---------------- */
+  /* ---------------- SCROLL BG ---------------- */
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 20);
-
-      // Active section detection
-      const sections = navItems.map((i) =>
-        document.querySelector(i.href)
-      );
-      const scrollPos = window.scrollY + 120;
-
-      sections.forEach((sec, i) => {
-        if (!sec) return;
-        const top = (sec as HTMLElement).offsetTop;
-        const height = (sec as HTMLElement).offsetHeight;
-        if (scrollPos >= top && scrollPos < top + height) {
-          setActive(navItems[i].href);
-        }
-      });
-    };
-
+    const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* ---------------- LOCK BODY SCROLL (MOBILE) ---------------- */
+  /* ---------------- ACTIVE SECTION ---------------- */
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    navItems.forEach((item) => {
+      const section = document.querySelector(item.href);
+      if (!section) return;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setActive(item.href);
+          }
+        },
+        { rootMargin: "-40% 0px -55% 0px" }
+      );
+
+      observer.observe(section);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  /* ---------------- LOCK PAGE WHEN MENU OPEN ---------------- */
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
+    document.body.style.pointerEvents = open ? "none" : "";
+
     return () => {
       document.body.style.overflow = "";
+      document.body.style.pointerEvents = "";
     };
   }, [open]);
 
@@ -56,26 +65,18 @@ export default function Navbar() {
     <motion.nav
       initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6 }}
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all",
+        "fixed inset-x-0 top-0 z-[1000] transition-all",
         scrolled
           ? "bg-[#f7f3ee]/80 backdrop-blur-xl border-b border-[#2b2118]/15"
           : "bg-transparent"
       )}
     >
       <div className="mx-auto max-w-6xl px-6">
-        <div
-          className={cn(
-            "flex items-center justify-between transition-all",
-            scrolled ? "py-3" : "py-6"
-          )}
-        >
+        <div className={cn("flex items-center justify-between", scrolled ? "py-3" : "py-6")}>
           {/* Brand */}
-          <a
-            href="#hero"
-            className="font-serif text-lg md:text-xl font-semibold tracking-tight text-[#2b2118]"
-          >
+          <a href="#hero" className="font-serif text-xl font-semibold text-[#2b2118]">
             Swarnadeep
           </a>
 
@@ -93,8 +94,6 @@ export default function Navbar() {
                 )}
               >
                 {item.name}
-
-                {/* Active underline */}
                 <span
                   className={cn(
                     "absolute left-0 -bottom-1 h-px bg-[#2b2118] transition-all duration-300",
@@ -108,8 +107,7 @@ export default function Navbar() {
           {/* Mobile Button */}
           <button
             onClick={() => setOpen(true)}
-            aria-label="Open menu"
-            className="md:hidden flex h-11 w-11 items-center justify-center rounded-full border border-[#2b2118]/40 text-[#2b2118] hover:bg-[#eae3da] transition"
+            className="md:hidden flex h-11 w-11 items-center justify-center rounded-full border border-[#2b2118]/40"
           >
             <Menu size={22} />
           </button>
@@ -123,37 +121,25 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-[#f7f3ee]/95 backdrop-blur-xl"
+            className="fixed inset-0 z-[9999] bg-[#f7f3ee] pointer-events-auto"
           >
-            {/* Close button */}
             <button
               onClick={() => setOpen(false)}
-              aria-label="Close menu"
-              className="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-full border border-[#2b2118]/40 text-[#2b2118] hover:bg-[#eae3da] transition"
+              className="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-full border border-[#2b2118]/40"
             >
-              <X size={22} />
+              <X />
             </button>
 
-            {/* Menu Items */}
             <div className="flex h-full flex-col items-center justify-center gap-10">
-              {navItems.map((item, i) => (
-                <motion.a
+              {navItems.map((item) => (
+                <a
                   key={item.name}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    transition: {
-                      delay: i * 0.08,
-                      ease: [0.22, 1, 0.36, 1],
-                    },
-                  }}
-                  className="font-serif text-3xl font-semibold text-[#2b2118] hover:text-[#5c4632] transition"
+                  className="font-serif text-3xl font-semibold text-[#2b2118]"
                 >
                   {item.name}
-                </motion.a>
+                </a>
               ))}
             </div>
           </motion.div>

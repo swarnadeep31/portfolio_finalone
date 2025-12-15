@@ -8,7 +8,7 @@ import SectionWrapper from "./StackedSection";
 export default function HeroSection() {
   return (
     <SectionWrapper id="hero">
-      <section className="relative min-h-screen flex items-center justify-center">
+      <div className="relative min-h-screen flex items-center justify-center">
         {/* Background texture */}
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(0,0,0,0.05),transparent_60%)]" />
 
@@ -80,7 +80,7 @@ export default function HeroSection() {
         >
           <ArrowDown className="h-5 w-5" />
         </motion.div>
-      </section>
+      </div>
     </SectionWrapper>
   );
 }

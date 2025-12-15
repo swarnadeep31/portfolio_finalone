@@ -132,7 +132,7 @@ export default function ContactSection() {
         onClose={() => setToast((t) => ({ ...t, show: false }))}
       />
 
-      <section className="relative bg-[#f7f3ee] py-32">
+      <div className="relative bg-[#f7f3ee] py-32">
         <div className="mx-auto max-w-3xl px-6">
 
           {/* Header */}
@@ -196,7 +196,7 @@ export default function ContactSection() {
             </button>
           </motion.form>
         </div>
-      </section>
+      </div>
     </SectionWrapper>
   );
 }

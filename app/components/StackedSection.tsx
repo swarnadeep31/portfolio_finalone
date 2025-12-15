@@ -18,22 +18,15 @@ export default function SectionWrapper({
   return (
     <motion.section
       id={id}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: false, margin: "-120px" }}
-      variants={{
-        hidden: { opacity: 0, y: 80 },
-        visible: {
-          opacity: 1,
-          y: 0,
-          transition: {
-            duration: 0.8,
-            ease: [0.22, 1, 0.36, 1],
-          },
-        },
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: false, amount: 0.25 }}
+      transition={{
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1],
       }}
       className={cn(
-        "relative -mt-32 bg-[#f7f3ee]", // overlap via margin
+        "relative scroll-mt-28 bg-[#f7f3ee]",
         className
       )}
     >

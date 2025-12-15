@@ -24,7 +24,7 @@ const itemVariants: Variants = {
 export default function AboutSection() {
   return (
     <SectionWrapper id="about">
-      <section className="py-32">
+      <div className="py-32">
         <div className="mx-auto max-w-6xl px-6 grid gap-20 lg:grid-cols-2 items-start">
           {/* TEXT */}
           <motion.div
@@ -104,7 +104,7 @@ export default function AboutSection() {
             ))}
           </motion.ul>
         </div>
-      </section>
+      </div>
     </SectionWrapper>
   );
 }
