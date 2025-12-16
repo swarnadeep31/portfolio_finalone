@@ -67,7 +67,7 @@ export default function Navbar() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       className={cn(
-        "fixed inset-x-0 top-0 z-[1000] transition-all",
+        "fixed inset-x-0 top-0 z-1000 transition-all",
         scrolled
           ? "bg-[#f7f3ee]/80 backdrop-blur-xl border-b border-[#2b2118]/15"
           : "bg-transparent"
@@ -121,7 +121,7 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] bg-[#f7f3ee] pointer-events-auto"
+            className="fixed inset-0 z-9999 bg-[#f7f3ee] pointer-events-auto"
           >
             <button
               onClick={() => setOpen(false)}
