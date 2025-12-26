@@ -31,7 +31,7 @@ function FloatingToast({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
           transition={{ duration: 0.25 }}
-          className="fixed top-6 left-1/2 z-999 w-[90%] max-w-md -translate-x-1/2 rounded-xl border bg-white px-5 py-4 shadow-2xl"
+          className="fixed top-6 left-1/2 z-[999] w-[90%] max-w-md -translate-x-1/2 rounded-xl border bg-white px-5 py-4 shadow-2xl"
         >
           <div className="flex items-start gap-3">
             <span className={cn(
@@ -215,22 +215,32 @@ function ContactItem({
   value: string;
   href?: string;
 }) {
-  const Wrapper = href ? Link : "div";
-
   return (
     <motion.div whileHover={{ x: 6 }}>
-      <Wrapper
-        href={href as any}
-        className="flex items-center gap-4 transition hover:text-[#2b2118]"
-      >
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl border">
-          {icon}
+      {href ? (
+        <Link
+          href={href}
+          className="flex items-center gap-4 transition hover:text-[#2b2118]"
+        >
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl border">
+            {icon}
+          </div>
+          <div>
+            <p className="text-xs">{label}</p>
+            <p className="text-sm font-medium">{value}</p>
+          </div>
+        </Link>
+      ) : (
+        <div className="flex items-center gap-4 transition hover:text-[#2b2118]">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl border">
+            {icon}
+          </div>
+          <div>
+            <p className="text-xs">{label}</p>
+            <p className="text-sm font-medium">{value}</p>
+          </div>
         </div>
-        <div>
-          <p className="text-xs">{label}</p>
-          <p className="text-sm font-medium">{value}</p>
-        </div>
-      </Wrapper>
+      )}
     </motion.div>
   );
 }

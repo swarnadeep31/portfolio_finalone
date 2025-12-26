@@ -13,7 +13,7 @@ const skills = [
   { name: "Tailwind CSS", category: "frontend" },
   { name: "MongoDB", category: "backend" },
   { name: "SQL", category: "backend" },
-  { name: "PostgreSQL", category : "backend"},
+  { name: "PostgreSQL", category: "backend" },
   { name: "Git & GitHub", category: "tools" },
   { name: "Figma", category: "tools" },
   { name: "VS Code", category: "tools" },
