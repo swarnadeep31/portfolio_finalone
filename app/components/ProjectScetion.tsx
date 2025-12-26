@@ -60,7 +60,7 @@ const projects: Project[] = [
   },
   {
     id: 1,
-    title: "AI Job Tracker",
+    title: "Job Tracker",
     description:
       "A modern job application tracking system with authentication, dashboard analytics, and status management. Built with Next.js and MongoDB for seamless job hunting organization.",
     image: "/projects/job-tracker.png",
