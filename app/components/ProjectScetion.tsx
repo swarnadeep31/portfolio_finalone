@@ -59,25 +59,15 @@ const projects: Project[] = [
     githubUrl: "#",
   },
   {
-    id: 1,
-    title: "Job Tracker",
-    description:
-      "A modern job application tracking system with authentication, dashboard analytics, and status management. Built with Next.js and MongoDB for seamless job hunting organization.",
-    image: "/projects/job-tracker.png",
-    video: "/projects/job-tracker.mp4",
-    tags: [
-      "Next.js",
-      "React",
-      "TypeScript",
-      "Tailwind CSS",
-      "MongoDB",
-      "NextAuth",
-      "Recharts",
-      "Framer Motion",
-    ],
-    demoUrl: "https://urjobs.vercel.app/",
-    githubUrl: "https://github.com/swarnadeep31/ai-job-tracker",
-  },
+    "id": 1,
+    "title": "Job Tracker",
+    "description": "A modern job application tracking system with authentication, dashboard analytics, and status management. Built with Next.js and MongoDB for seamless job hunting organization.",
+    "image": "/projects/job-tracker.png",
+    "video": "/projects/job-tracker.mp4",
+    "tags": ["Next.js", "React", "TypeScript", "Tailwind CSS", "MongoDB", "NextAuth", "Recharts", "Framer Motion"],
+    "demoUrl": "https://urjobs.vercel.app/",
+    "githubUrl": "https://github.com/swarnadeep31/ai-job-tracker",
+  }
 ];
 
 /* --------------------------------------------------
@@ -120,7 +110,8 @@ export default function ProjectSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
-            className="mb-20 text-center">
+            className="mb-20 text-center"
+          >
             <h2 className="font-serif text-4xl md:text-6xl font-bold text-[#2b2118]">
               Selected Projects
             </h2>
@@ -139,7 +130,8 @@ export default function ProjectSection() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: false }}
-                className="group">
+                className="group"
+              >
                 <ProjectItem
                   project={project}
                   onOpen={() => setActive(project)}
@@ -153,14 +145,18 @@ export default function ProjectSection() {
             <Link
               href="https://github.com/swarnadeep31"
               target="_blank"
-              className="inline-flex items-center gap-2 rounded-lg border border-[#2b2118]/40 px-6 py-3 text-[#2b2118] hover:bg-[#eae3da] transition">
+              className="inline-flex items-center gap-2 rounded-lg border border-[#2b2118]/40 px-6 py-3 text-[#2b2118] hover:bg-[#eae3da] transition"
+            >
               View More on GitHub
             </Link>
           </div>
 
           <AnimatePresence>
             {active && (
-              <ProjectModal project={active} onClose={() => setActive(null)} />
+              <ProjectModal
+                project={active}
+                onClose={() => setActive(null)}
+              />
             )}
           </AnimatePresence>
         </div>
@@ -192,7 +188,8 @@ function ProjectItem({
             videoRef.current.pause();
             videoRef.current.currentTime = 0;
           }
-        }}>
+        }}
+      >
         {project.video ? (
           <video
             ref={videoRef}
@@ -214,7 +211,8 @@ function ProjectItem({
 
         <button
           onClick={onOpen}
-          className="absolute bottom-4 right-4 rounded-md bg-[#2b2118] px-4 py-2 text-sm text-[#f7f3ee] hover:bg-[#3a2c20] transition">
+          className="absolute bottom-4 right-4 rounded-md bg-[#2b2118] px-4 py-2 text-sm text-[#f7f3ee] hover:bg-[#3a2c20] transition"
+        >
           Preview
         </button>
       </div>
@@ -223,7 +221,10 @@ function ProjectItem({
       <div>
         <div className="mb-3 flex flex-wrap gap-2">
           {project.tags.map((tag) => (
-            <span key={tag} className="text-xs text-[#6b5a4a]">
+            <span
+              key={tag}
+              className="text-xs text-[#6b5a4a]"
+            >
               {tag}
             </span>
           ))}
@@ -268,7 +269,8 @@ function ProjectModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      onClick={onClose}>
+      onClick={onClose}
+    >
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
       <motion.div
@@ -276,10 +278,12 @@ function ProjectModal({
         initial={{ scale: 0.96 }}
         animate={{ scale: 1 }}
         exit={{ scale: 0.96 }}
-        className="relative mx-4 w-full max-w-5xl overflow-hidden rounded-2xl bg-[#f7f3ee]">
+        className="relative mx-4 w-full max-w-5xl overflow-hidden rounded-2xl bg-[#f7f3ee]"
+      >
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 z-10 rounded-full border border-[#2b2118]/40 p-2 hover:bg-[#eae3da]">
+          className="absolute right-4 top-4 z-10 rounded-full border border-[#2b2118]/40 p-2 hover:bg-[#eae3da]"
+        >
           <X size={18} />
         </button>
 

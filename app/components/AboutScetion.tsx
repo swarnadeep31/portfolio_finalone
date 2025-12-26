@@ -58,7 +58,7 @@ export default function AboutSection() {
               </Link>
 
               <Link
-                href="https://drive.google.com/file/d/1C174IFlvkl8aoq5v5XW9nlKYtfPdSvcZ/view?usp=sharing"
+                href="https://drive.google.com/file/d/1-RG0yauP4JIdyVx9yisupbyfDjP32WMv/view?usp=sharing"
                 className="rounded-lg border border-[#2b2118]/40 px-6 py-3 text-sm text-[#2b2118] hover:bg-[#eae3da] transition">
                 View Resume
               </Link>
