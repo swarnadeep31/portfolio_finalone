@@ -17,6 +17,12 @@ const skills = [
   { name: "Git & GitHub", category: "tools" },
   { name: "Figma", category: "tools" },
   { name: "VS Code", category: "tools" },
+  { name: "Next.js", category: "frontend" },
+  { name: "NextAuth", category: "frontend" },
+  { name: "Recharts", category: "frontend" },
+  { name: "Framer Motion", category: "frontend" },
+  { name: "Node.js", category: "backend" },
+  { name: "Mongoose", category: "backend" },
 ];
 
 const categories = ["all", "frontend", "backend", "tools"] as const;
@@ -38,8 +44,7 @@ const itemVariants: Variants = {
 };
 
 export default function SkillsSection() {
-  const [active, setActive] =
-    useState<(typeof categories)[number]>("all");
+  const [active, setActive] = useState<(typeof categories)[number]>("all");
 
   const visible = skills.filter(
     (s) => active === "all" || s.category === active
@@ -55,8 +60,7 @@ export default function SkillsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            className="mb-20 text-center"
-          >
+            className="mb-20 text-center">
             <h2 className="font-serif text-4xl md:text-6xl font-bold text-[#2b2118]">
               Skills & Tools
             </h2>
@@ -77,8 +81,7 @@ export default function SkillsSection() {
                   active === c
                     ? "bg-[#2b2118] text-[#f7f3ee]"
                     : "border border-[#2b2118]/30 text-[#2b2118] hover:bg-[#eae3da]"
-                )}
-              >
+                )}>
                 {c}
               </button>
             ))}
@@ -86,18 +89,16 @@ export default function SkillsSection() {
 
           {/* SKILLS LIST */}
           <motion.ul
-            key={active}                 // 🔥 THIS IS THE FIX
+            key={active} // 🔥 THIS IS THE FIX
             initial="hidden"
             animate="visible"
-            className="grid gap-x-12 gap-y-6 sm:grid-cols-2 lg:grid-cols-3"
-          >
+            className="grid gap-x-12 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
             {visible.map((skill, i) => (
               <motion.li
                 key={skill.name}
                 custom={i}
                 variants={itemVariants}
-                className="flex items-baseline justify-between border-b border-[#2b2118]/15 pb-3"
-              >
+                className="flex items-baseline justify-between border-b border-[#2b2118]/15 pb-3">
                 <span className="font-serif text-lg font-semibold text-[#2b2118]">
                   {skill.name}
                 </span>
