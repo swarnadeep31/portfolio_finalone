@@ -42,7 +42,7 @@ const projects: Project[] = [
       "OpenAI",
       "Razorpay",
     ],
-    demoUrl: "https://examhell.feesdiary.com",
+    demoUrl: "https://exam-hell.vercel.app/",
     githubUrl: "#",
   },
 
