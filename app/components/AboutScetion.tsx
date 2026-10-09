@@ -124,7 +124,7 @@ export default function AboutSection() {
                   Contact me
                 </a>
                 <a
-                  href="https://drive.google.com/file/d/1ZOZoWvxnno2F1nKxUba-ggB5B8vi9f6J/view?usp=sharing"
+                  href="https://drive.google.com/file/d/1-kO1Wrbl8T_FzpfJlKlrg14IQEghVzl8/view?usp=sharing"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-foreground hover:text-background">
