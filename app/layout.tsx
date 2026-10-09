@@ -16,7 +16,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Swarnadeep Roy — Frontend Developer",
+  title: "Swarnadeep Roy",
   description:
     "Frontend developer crafting fast, accessible, and elegant web experiences with React, Next.js, TypeScript, and Tailwind CSS.",
 };
