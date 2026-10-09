@@ -29,10 +29,10 @@ type Project = {
 const projects: Project[] = [
   {
     id: 1,
-    title: "ExamHell",
+    title: "learnest",
     description:
       "An AI-powered platform designed to help students prepare for exams and assist teachers in creating exams automatically. The system focuses on smart question generation, analytics, and seamless assessment workflows.",
-    image: "/projects/Examhell.png",
+    image: "/projects/learnest.png",
     video: "",
     tags: [
       "TypeScript",
@@ -44,7 +44,7 @@ const projects: Project[] = [
       "OpenAI",
       "Razorpay",
     ],
-    demoUrl: "https://exam-hell.vercel.app/",
+    demoUrl: "https://trylearnest.com/",
     githubUrl: "#",
   },
 
