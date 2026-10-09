@@ -1,84 +1,89 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUp, Facebook, Instagram, Linkedin } from "lucide-react";
+import { ArrowUp, ArrowUpRight } from "lucide-react";
+import { socials } from "../lib/socials";
+
+const links = [
+  { name: "About", href: "#about" },
+  { name: "Skills", href: "#skills" },
+  { name: "Projects", href: "#projects" },
+  { name: "Contact", href: "#contact" },
+];
 
 export default function Footer() {
   return (
-    <footer className="relative bg-[#f7f3ee]">
-      {/* Paper texture */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom,rgba(0,0,0,0.05),transparent_60%)]" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
-
-      {/* Top divider (soft, not harsh) */}
-      <div className="h-px w-full bg-[#2b2118]/15" />
-
-      {/* Content */}
-      <motion.div
-        initial={{ opacity: 0, y: 28 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto max-w-6xl px-6 py-16"
-      >
-        <div className="flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
-          {/* Copyright */}
-          <p className="text-sm text-[#6b5a4a] text-center md:text-left">
-            © {new Date().getFullYear()} Swarnadeep Roy. All rights reserved.
+    <footer className="relative overflow-hidden border-t">
+      <div className="container-page grid grid-cols-2 gap-12 py-16 md:grid-cols-12 md:py-20">
+        <div className="col-span-2 md:col-span-5">
+          <p className="text-xl font-medium tracking-tight">Swarnadeep Roy</p>
+          <p className="mt-2 max-w-xs text-muted">
+            Frontend developer based in Kolkata, building calm and considered
+            interfaces for the web.
           </p>
+        </div>
 
-          {/* Social links */}
-          <div className="flex items-center justify-center gap-6">
-            {[
-              {
-                href: "https://www.linkedin.com/in/swarnadeeproy/",
-                icon: <Linkedin size={18} />,
-              },
-              {
-                href: "https://www.instagram.com/thatgoddamntrip/",
-                icon: <Instagram size={18} />,
-              },
-              {
-                href: "https://www.facebook.com/swarnadeep.roy.90/",
-                icon: <Facebook size={18} />,
-              },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ y: -3 }}
-                transition={{ type: "spring", stiffness: 260 }}
-              >
-                <Link
-                  href={item.href}
-                  target="_blank"
-                  className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#2b2118]/30 text-[#2b2118] hover:bg-[#eae3da] transition"
-                >
-                  {item.icon}
-                </Link>
-              </motion.div>
+        <nav className="md:col-span-2" aria-label="Footer">
+          <p className="label-mono mb-4">Navigate</p>
+          <ul className="space-y-2">
+            {links.map((link) => (
+              <li key={link.name}>
+                <a
+                  href={link.href}
+                  className="text-muted transition-colors hover:text-foreground">
+                  {link.name}
+                </a>
+              </li>
             ))}
-          </div>
+          </ul>
+        </nav>
 
-          {/* Back to top */}
+        <div className="md:col-span-3">
+          <p className="label-mono mb-4">Socials</p>
+          <ul className="space-y-2">
+            {socials.map((s) => (
+              <li key={s.name}>
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-1 text-muted transition-colors hover:text-foreground">
+                  {s.name}
+                  <ArrowUpRight
+                    size={14}
+                    className="opacity-0 transition-opacity group-hover:opacity-100"
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="col-span-2 md:flex md:justify-end">
           <motion.button
             whileHover={{ y: -3 }}
             transition={{ type: "spring", stiffness: 260 }}
-            onClick={() =>
-              window.scrollTo({ top: 0, behavior: "smooth" })
-            }
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             aria-label="Back to top"
-            className="mx-auto md:mx-0 flex h-10 w-10 items-center justify-center rounded-lg bg-[#2b2118] text-[#f7f3ee] hover:bg-[#3a2c20] transition"
-          >
+            className="flex h-12 w-12 items-center justify-center rounded-full border transition-colors hover:bg-foreground hover:text-background">
             <ArrowUp size={18} />
           </motion.button>
         </div>
+      </div>
 
-        {/* Bottom note */}
-        <div className="mt-12 text-center text-xs text-[#6b5a4a]">
-          Designed & built with care using Next.js, Tailwind CSS, and Framer Motion
+      {/* Oversized wordmark */}
+      <div aria-hidden className="container-page select-none">
+        <p className="translate-y-[0.12em] text-center text-[clamp(3rem,15vw,14rem)] leading-[0.8] font-semibold tracking-[-0.06em] text-transparent bg-linear-to-b from-foreground/90 to-foreground/10 bg-clip-text">
+          Swarnadeep
+        </p>
+      </div>
+
+      <div className="relative border-t bg-background">
+        <div className="container-page flex flex-col gap-2 py-6 text-xs text-muted sm:flex-row sm:justify-between">
+          <p>© {new Date().getFullYear()} Swarnadeep Roy. All rights reserved.</p>
+          <p>Built with Next.js, Tailwind CSS &amp; Framer Motion</p>
         </div>
-      </motion.div>
+      </div>
     </footer>
   );
 }

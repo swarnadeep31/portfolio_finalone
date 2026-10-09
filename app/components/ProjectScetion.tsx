@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { ExternalLink, Github, X } from "lucide-react";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { ArrowUpRight, Github, Maximize2, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import SectionWrapper from "./StackedSection";
+import SectionHeader from "./SectionHeader";
+import Reveal from "./Reveal";
+import { cn } from "../lib/utils";
 
 /* --------------------------------------------------
    TYPES
@@ -102,174 +104,199 @@ const projects: Project[] = [
 ];
 
 /* --------------------------------------------------
-   ANIMATION
--------------------------------------------------- */
-const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 32 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1], // ✔ TS-safe cubic bezier
-    },
-  },
-};
-
-/* --------------------------------------------------
    SECTION
 -------------------------------------------------- */
 export default function ProjectSection() {
   const [active, setActive] = useState<Project | null>(null);
-
-  useEffect(() => {
-    const esc = (e: KeyboardEvent) => e.key === "Escape" && setActive(null);
-    window.addEventListener("keydown", esc);
-    return () => window.removeEventListener("keydown", esc);
-  }, []);
+  const close = useCallback(() => setActive(null), []);
 
   return (
-    <SectionWrapper id="projects">
-      <section className="py-32">
-        {/* Paper texture */}
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(0,0,0,0.05),transparent_60%)]" />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-size-[64px_64px]" />
-
-        <div className="mx-auto max-w-6xl px-6">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            className="mb-20 text-center">
-            <h2 className="font-serif text-4xl md:text-6xl font-bold text-[#2b2118]">
-              Selected Projects
-            </h2>
-            <p className="mt-4 mx-auto max-w-2xl text-[#6b5a4a]">
+    <SectionWrapper id="projects" className="py-24 md:py-32">
+      <div className="container-page">
+        <SectionHeader
+          index="03"
+          label="Selected Work"
+          title={
+            <>
+              Things I’ve{" "}
+              <span className="font-serif font-normal italic">built</span>
+            </>
+          }
+          aside={
+            <p>
               A curated selection of real-world work focused on clarity,
               performance, and thoughtful design.
             </p>
-          </motion.div>
+          }
+        />
 
-          {/* Projects */}
-          <div className="grid gap-20 md:grid-cols-2">
-            {projects.map((project) => (
-              <motion.div
-                key={project.id}
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: false }}
-                className="group">
-                <ProjectItem
-                  project={project}
-                  onOpen={() => setActive(project)}
-                />
-              </motion.div>
-            ))}
-          </div>
-
-          {/* CTA */}
-          <div className="mt-24 text-center">
-            <Link
-              href="https://github.com/swarnadeep31"
-              target="_blank"
-              className="inline-flex items-center gap-2 rounded-lg border border-[#2b2118]/40 px-6 py-3 text-[#2b2118] hover:bg-[#eae3da] transition">
-              View More on GitHub
-            </Link>
-          </div>
-
-          <AnimatePresence>
-            {active && (
-              <ProjectModal project={active} onClose={() => setActive(null)} />
-            )}
-          </AnimatePresence>
+        {/* Projects */}
+        <div className="mt-16 grid gap-x-6 gap-y-16 md:mt-20 md:grid-cols-2 md:gap-y-24">
+          {projects.map((project, i) => (
+            <Reveal
+              key={project.id}
+              delay={i === 0 ? 0 : (i % 2) * 0.1}
+              className={cn(i === 0 && "md:col-span-2")}>
+              <ProjectItem
+                project={project}
+                index={i + 1}
+                featured={i === 0}
+                onOpen={() => setActive(project)}
+              />
+            </Reveal>
+          ))}
         </div>
-      </section>
+
+        {/* CTA */}
+        <Reveal className="mt-24 flex flex-col items-center gap-6 border-t pt-16 text-center">
+          <p className="label-mono">More on GitHub</p>
+          <a
+            href="https://github.com/swarnadeep31"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-3 text-3xl font-medium tracking-tight md:text-5xl">
+            <Github className="h-7 w-7 md:h-10 md:w-10" />
+            <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_2px] bg-left-bottom bg-no-repeat pb-1 transition-[background-size] duration-500 group-hover:bg-[length:100%_2px]">
+              @swarnadeep31
+            </span>
+            <ArrowUpRight className="h-7 w-7 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1 md:h-10 md:w-10" />
+          </a>
+        </Reveal>
+      </div>
+
+      <AnimatePresence>
+        {active && (
+          <ProjectModal project={active} onClose={close} />
+        )}
+      </AnimatePresence>
     </SectionWrapper>
   );
 }
 
 /* --------------------------------------------------
-   PROJECT ITEM (NO CARD EFFECT)
+   PROJECT ITEM
 -------------------------------------------------- */
 function ProjectItem({
   project,
+  index,
+  featured,
   onOpen,
 }: {
   project: Project;
+  index: number;
+  featured: boolean;
   onOpen: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const hasGithub = project.githubUrl !== "#";
 
   return (
-    <div className="space-y-6">
+    <article className="group">
       {/* Media */}
       <div
-        className="relative aspect-video overflow-hidden rounded-xl bg-[#eae3da]"
-        onMouseEnter={() => videoRef.current?.play()}
+        className={cn(
+          "relative overflow-hidden rounded-2xl border bg-surface",
+          featured ? "aspect-video lg:aspect-[2.2/1]" : "aspect-video"
+        )}
+        onMouseEnter={() => videoRef.current?.play().catch(() => {})}
         onMouseLeave={() => {
           if (videoRef.current) {
             videoRef.current.pause();
             videoRef.current.currentTime = 0;
           }
         }}>
-        {project.video ? (
-          <video
-            ref={videoRef}
-            src={project.video}
-            muted
-            loop
-            playsInline
-            poster={project.image}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <Image
-            src={project.image!}
-            fill
-            alt={project.title}
-            className="object-cover"
-          />
-        )}
+        {/* Grayscale at rest, full colour on hover (always colour on touch screens) */}
+        <div className="absolute inset-0 transition-[filter,transform] duration-700 ease-out grayscale group-hover:scale-[1.03] group-hover:grayscale-0 [@media(hover:none)]:grayscale-0">
+          {project.video ? (
+            <video
+              ref={videoRef}
+              src={project.video}
+              muted
+              loop
+              playsInline
+              preload="none"
+              poster={project.image}
+              className="h-full w-full object-cover object-top"
+            />
+          ) : (
+            <Image
+              src={project.image!}
+              fill
+              sizes={featured ? "(min-width: 768px) 1280px, 100vw" : "(min-width: 768px) 640px, 100vw"}
+              alt={project.title}
+              className="object-cover object-top"
+            />
+          )}
+        </div>
+
+        <span className="absolute top-4 left-4 rounded-full border border-white/15 bg-black/50 px-3 py-1 font-mono text-[11px] text-white backdrop-blur-md">
+          {String(index).padStart(2, "0")}
+        </span>
 
         <button
           onClick={onOpen}
-          className="absolute bottom-4 right-4 rounded-md bg-[#2b2118] px-4 py-2 text-sm text-[#f7f3ee] hover:bg-[#3a2c20] transition">
+          className="absolute right-4 bottom-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/60 px-4 py-2 text-sm text-white backdrop-blur-md transition-all duration-300 hover:bg-white hover:text-black md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 md:focus-visible:translate-y-0 md:focus-visible:opacity-100">
+          <Maximize2 size={14} />
           Preview
         </button>
       </div>
 
       {/* Meta */}
-      <div>
-        <div className="mb-3 flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <span key={tag} className="text-xs text-[#6b5a4a]">
-              {tag}
-            </span>
-          ))}
+      <div
+        className={cn(
+          "mt-6 grid gap-4",
+          featured && "lg:grid-cols-12 lg:gap-6"
+        )}>
+        <div className={cn(featured && "lg:col-span-5")}>
+          <div
+            className={cn(
+              "flex items-start justify-between gap-4",
+              featured && "lg:flex-col lg:gap-6"
+            )}>
+            <h3 className="text-2xl font-medium tracking-[-0.03em] md:text-3xl">
+              {project.title}
+            </h3>
+
+            <div className="flex shrink-0 gap-2">
+              {hasGithub && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${project.title} source code on GitHub`}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border transition-colors hover:bg-foreground hover:text-background">
+                  <Github size={16} />
+                </a>
+              )}
+              <a
+                href={project.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Visit ${project.title} live site`}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-foreground text-background transition-transform hover:-rotate-45">
+                <ArrowUpRight size={18} />
+              </a>
+            </div>
+          </div>
         </div>
 
-        <h3 className="font-serif text-lg font-semibold text-[#2b2118]">
-          {project.title}
-        </h3>
+        <div className={cn(featured && "lg:col-span-7")}>
+          <p className="max-w-2xl leading-relaxed text-muted">
+            {project.description}
+          </p>
 
-        <p className="mt-2 max-w-xl text-sm text-[#6b5a4a]">
-          {project.description}
-        </p>
-
-        <div className="mt-4 flex gap-4">
-          <Link href={project.demoUrl} target="_blank">
-            <ExternalLink size={18} />
-          </Link>
-          {project.githubUrl !== "#" && (
-            <Link href={project.githubUrl} target="_blank">
-              <Github size={18} />
-            </Link>
-          )}
+          <ul className="mt-5 flex flex-wrap gap-1.5">
+            {project.tags.map((tag) => (
+              <li
+                key={tag}
+                className="rounded-full border px-2.5 py-1 font-mono text-[11px] tracking-wide text-muted uppercase">
+                {tag}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -283,41 +310,86 @@ function ProjectModal({
   project: Project;
   onClose: () => void;
 }) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", esc);
+    document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
+
+    return () => {
+      window.removeEventListener("keydown", esc);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${project.title} preview`}
+      className="fixed inset-0 z-[70] flex items-center justify-center p-4 md:p-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}>
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" />
 
       <motion.div
         onClick={(e) => e.stopPropagation()}
-        initial={{ scale: 0.96 }}
-        animate={{ scale: 1 }}
-        exit={{ scale: 0.96 }}
-        className="relative mx-4 w-full max-w-5xl overflow-hidden rounded-2xl bg-[#f7f3ee]">
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 z-10 rounded-full border border-[#2b2118]/40 p-2 hover:bg-[#eae3da]">
-          <X size={18} />
-        </button>
+        initial={{ opacity: 0, y: 24, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 12, scale: 0.98 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full max-w-6xl overflow-hidden rounded-2xl border bg-background">
+        {/* Header bar */}
+        <div className="flex items-center justify-between gap-4 border-b px-4 py-3 md:px-5">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="hidden gap-1.5 sm:flex" aria-hidden>
+              <span className="h-2.5 w-2.5 rounded-full bg-subtle" />
+              <span className="h-2.5 w-2.5 rounded-full bg-subtle" />
+              <span className="h-2.5 w-2.5 rounded-full bg-subtle" />
+            </span>
+            <p className="truncate text-sm font-medium">{project.title}</p>
+          </div>
 
-        <div className="h-[70vh] bg-[#eae3da]">
+          <div className="flex shrink-0 items-center gap-2">
+            <a
+              href={project.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors hover:bg-foreground hover:text-background">
+              Live site
+              <ArrowUpRight size={13} />
+            </a>
+            <button
+              ref={closeRef}
+              onClick={onClose}
+              aria-label="Close preview"
+              className="flex h-8 w-8 items-center justify-center rounded-full border transition-colors hover:bg-foreground hover:text-background">
+              <X size={15} />
+            </button>
+          </div>
+        </div>
+
+        <div className="relative aspect-video max-h-[75vh] w-full bg-black">
           {project.video ? (
             <video
               src={project.video}
               autoPlay
+              muted
               loop
               controls
               playsInline
+              poster={project.image}
               className="h-full w-full object-contain"
             />
           ) : (
             <Image
               src={project.image!}
               fill
+              sizes="(min-width: 1152px) 1152px, 100vw"
               alt={project.title}
               className="object-contain"
             />
