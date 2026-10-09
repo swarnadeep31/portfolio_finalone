@@ -80,7 +80,7 @@ export default function HeroSection() {
         {/* Headline */}
         <div className="container-page flex flex-1 flex-col justify-center py-16">
           <p className="label-mono mb-6 md:mb-8">
-            <MaskLine delay={0.1}>Frontend Developer &amp; UI Engineer</MaskLine>
+            <MaskLine delay={0.1}>Fullstack Developer &amp; UI Engineer</MaskLine>
           </p>
 
           <div className="relative">
