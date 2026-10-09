@@ -165,7 +165,7 @@ export default function ContactSection() {
           <Reveal className="space-y-10 md:col-span-5">
             <InfoItem label="Email">
               <a
-                href="mailto:swarnadeeproy35@gmail.com"
+                href="mailto:swarnadeep040@gmail.com"
                 className="group inline-flex items-center gap-2 text-xl break-all md:text-2xl">
                 <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:100%_1px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 group-hover:bg-[length:0%_1px]">
                   swarnadeeproy35@gmail.com
