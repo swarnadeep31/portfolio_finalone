@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import SectionWrapper from "./StackedSection";
 import SectionHeader from "./SectionHeader";
 import Reveal from "./Reveal";
-import { cn } from "../lib/utils";
 
 /* --------------------------------------------------
    TYPES
@@ -59,48 +58,6 @@ const projects: Project[] = [
     demoUrl: "https://esonatakshikhi.com",
     githubUrl: "#",
   },
-  {
-    id: 3,
-    title: "Modern Real Estate",
-    description:
-      "A modern real estate frontend showcasing listings with smooth transitions.",
-    image: "/projects/realestate.png",
-    video: "/projects/realestate.mp4",
-    tags: ["React", "TypeScript", "Tailwind"],
-    demoUrl: "https://real-estate-awwwards.vercel.app/",
-    githubUrl: "#",
-  },
-  {
-    id: 4,
-    title: "Job Tracker",
-    description:
-      "A modern job application tracking system with authentication, dashboard analytics, and status management. Built with Next.js and MongoDB for seamless job hunting organization.",
-    image: "/projects/job-tracker.png",
-    video: "/projects/job-tracker.mp4",
-    tags: [
-      "Next.js",
-      "React",
-      "TypeScript",
-      "Tailwind CSS",
-      "MongoDB",
-      "NextAuth",
-      "Recharts",
-      "Framer Motion",
-    ],
-    demoUrl: "https://urjobs.vercel.app/",
-    githubUrl: "https://github.com/swarnadeep31/ai-job-tracker",
-  },
-  {
-    id: 5,
-    title: "TypeSpeed — Typing Trainer",
-    description:
-      "A real-time typing practice app with live WPM, accuracy tracking, and a responsive interface.",
-    image: "/projects/typing.png",
-    video: "/projects/typing.mp4",
-    tags: ["React", "TypeScript", "Tailwind"],
-    demoUrl: "https://type-speed-green.vercel.app/",
-    githubUrl: "https://github.com/swarnadeep31/type-speed",
-  },
 ];
 
 /* --------------------------------------------------
@@ -133,14 +90,10 @@ export default function ProjectSection() {
         {/* Projects */}
         <div className="mt-16 grid gap-x-6 gap-y-16 md:mt-20 md:grid-cols-2 md:gap-y-24">
           {projects.map((project, i) => (
-            <Reveal
-              key={project.id}
-              delay={i === 0 ? 0 : (i % 2) * 0.1}
-              className={cn(i === 0 && "md:col-span-2")}>
+            <Reveal key={project.id} delay={(i % 2) * 0.1}>
               <ProjectItem
                 project={project}
                 index={i + 1}
-                featured={i === 0}
                 onOpen={() => setActive(project)}
               />
             </Reveal>
@@ -179,12 +132,10 @@ export default function ProjectSection() {
 function ProjectItem({
   project,
   index,
-  featured,
   onOpen,
 }: {
   project: Project;
   index: number;
-  featured: boolean;
   onOpen: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -194,10 +145,7 @@ function ProjectItem({
     <article className="group">
       {/* Media */}
       <div
-        className={cn(
-          "relative overflow-hidden rounded-2xl border bg-surface",
-          featured ? "aspect-video lg:aspect-[2.2/1]" : "aspect-video"
-        )}
+        className="relative aspect-video overflow-hidden rounded-2xl border bg-surface"
         onMouseEnter={() => videoRef.current?.play().catch(() => {})}
         onMouseLeave={() => {
           if (videoRef.current) {
@@ -222,7 +170,7 @@ function ProjectItem({
             <Image
               src={project.image!}
               fill
-              sizes={featured ? "(min-width: 768px) 1280px, 100vw" : "(min-width: 768px) 640px, 100vw"}
+              sizes="(min-width: 768px) 640px, 100vw"
               alt={project.title}
               className="object-cover object-top"
             />
@@ -242,17 +190,9 @@ function ProjectItem({
       </div>
 
       {/* Meta */}
-      <div
-        className={cn(
-          "mt-6 grid gap-4",
-          featured && "lg:grid-cols-12 lg:gap-6"
-        )}>
-        <div className={cn(featured && "lg:col-span-5")}>
-          <div
-            className={cn(
-              "flex items-start justify-between gap-4",
-              featured && "lg:flex-col lg:gap-6"
-            )}>
+      <div className="mt-6 grid gap-4">
+        <div>
+          <div className="flex items-start justify-between gap-4">
             <h3 className="text-2xl font-medium tracking-[-0.03em] md:text-3xl">
               {project.title}
             </h3>
@@ -280,7 +220,7 @@ function ProjectItem({
           </div>
         </div>
 
-        <div className={cn(featured && "lg:col-span-7")}>
+        <div>
           <p className="max-w-2xl leading-relaxed text-muted">
             {project.description}
           </p>
