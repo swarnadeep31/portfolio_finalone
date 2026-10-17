@@ -58,6 +58,27 @@ const projects: Project[] = [
     demoUrl: "https://esonatakshikhi.com",
     githubUrl: "#",
   },
+
+  {
+    id: 3,
+    title: "TrailCast",
+    description:
+      "Moto vlogs, Himalayan treks and summit climbs with a live map beside the YouTube video. The route and key points come from a GPS file or AI, a marker follows the video as it plays, and viewers save the stops to Google Maps, a GPX file or a trip sheet.",
+    image: "/projects/trailcast-home.png",
+    video: "",
+    tags: [
+      "React",
+      "Vite",
+      "Tailwind CSS",
+      "Leaflet",
+      "Node",
+      "Express",
+      "MongoDB",
+      "Gemini",
+    ],
+    demoUrl: "https://riderai-client.vercel.app",
+    githubUrl: "https://github.com/swarnadeep31/RiderAI",
+  },
 ];
 
 /* --------------------------------------------------
