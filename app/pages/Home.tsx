@@ -1,6 +1,5 @@
 import { MotionConfig } from "framer-motion";
 import AboutSection from "../components/AboutScetion";
-import BuildingSection from "../components/BuildingSection";
 import ContactSection from "../components/ContactScetion";
 import Footer from "../components/Footer";
 import HeroSection from "../components/HeroSecton";
@@ -19,7 +18,6 @@ export const Home = () => {
           <AboutSection />
           <SkillsScetions />
           <ProjectSection />
-          <BuildingSection />
           <ContactSection />
         </main>
         <Footer />
