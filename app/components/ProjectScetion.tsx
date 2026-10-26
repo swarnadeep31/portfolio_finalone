@@ -64,7 +64,7 @@ const projects: Project[] = [
     title: "TrailCast",
     description:
       "Moto vlogs, Himalayan treks and summit climbs with a live map beside the YouTube video. The route and key points come from a GPS file or AI, a marker follows the video as it plays, and viewers save the stops to Google Maps, a GPX file or a trip sheet.",
-    image: "/projects/trailcast-home.png",
+    image: "/projects/Trailcast-home.png",
     video: "",
     tags: [
       "React",
