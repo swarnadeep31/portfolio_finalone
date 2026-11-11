@@ -28,8 +28,9 @@ export const viewport: Viewport = {
   ],
 };
 
-/* Applies the saved theme before first paint so there is no flash */
-const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t!=="light")t="dark";var d=document.documentElement;d.dataset.theme=t;d.style.colorScheme=t;}catch(e){}})();`;
+/* Applies the saved theme before first paint so there is no flash, and
+   hides the page for the swarm intro (see components/SwarmBuild.tsx) */
+const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t!=="light")t="dark";var d=document.documentElement;d.dataset.theme=t;d.style.colorScheme=t;if(!matchMedia("(prefers-reduced-motion: reduce)").matches)d.dataset.swarm="intro";}catch(e){}})();`;
 
 export default function RootLayout({
   children,

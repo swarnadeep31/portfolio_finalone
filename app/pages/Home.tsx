@@ -6,6 +6,7 @@ import HeroSection from "../components/HeroSecton";
 import Navbar from "../components/Navbar";
 import ProjectSection from "../components/ProjectScetion";
 import SkillsScetions from "../components/SkillsScetions";
+import SwarmBuild from "../components/SwarmBuild";
 
 export const Home = () => {
   return (
@@ -21,6 +22,7 @@ export const Home = () => {
           <ContactSection />
         </main>
         <Footer />
+        <SwarmBuild />
       </div>
     </MotionConfig>
   );
