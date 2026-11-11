@@ -8,15 +8,12 @@ import { useEffect } from "react";
   dragging out a selection box with a live size badge, then typing the
   text in (or fading the element in). Elements below the fold are built
   as they scroll into view. Esc or "Skip" reveals everything at once.
+  Once everything is built, the cursors follow the mouse and circle it
+  when it stops (Esc dismisses them); on touch screens they fade out.
 
   The <head> script in layout.tsx sets html[data-swarm="intro"] before
   first paint so nothing flashes; this component takes over from there.
 */
-
-const COLORS = [
-  "#f87171", "#fb923c", "#facc15", "#4ade80", "#2dd4bf",
-  "#38bdf8", "#818cf8", "#c084fc", "#f472b6", "#a3e635",
-];
 
 const TARGETS =
   "h1,h2,h3,h4,h5,p,span,a,button,img,svg,li,label,input,textarea,select";
@@ -27,10 +24,20 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
-const CURSOR_SVG = (color: string) =>
-  `<svg width="18" height="20" viewBox="0 0 18 20" fill="none"><path d="M1.5 1.5 L16 9.2 L9.4 10.9 L6.2 17.6 Z" fill="${color}" stroke="rgba(0,0,0,.55)" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
+// Monochrome arrow that follows the theme: white on dark, black on light
+const CURSOR_SVG = `<svg width="18" height="20" viewBox="0 0 18 20" fill="none"><path d="M1.5 1.5 L16 9.2 L9.4 10.9 L6.2 17.6 Z" fill="var(--foreground)" stroke="var(--background)" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
 
-type Agent = { el: HTMLDivElement; color: string; x: number; y: number; idleUntil: number };
+type Agent = {
+  el: HTMLDivElement;
+  x: number;
+  y: number;
+  idleUntil: number;
+  busy: boolean;
+  // How loosely this cursor trails the mouse once the page is built
+  lag: number;
+  ox: number;
+  oy: number;
+};
 
 export default function SwarmBuild() {
   useEffect(() => {
@@ -86,20 +93,28 @@ export default function SwarmBuild() {
     /* ---------------- agents ---------------- */
     const agents: Agent[] = [];
     const spawn = (x: number, y: number) => {
-      const color = COLORS[agents.length % COLORS.length];
       const el = document.createElement("div");
       el.className = "swarm-cursor";
-      el.innerHTML = CURSOR_SVG(color);
+      el.innerHTML = CURSOR_SVG;
       el.style.transform = `translate(${x}px, ${y}px)`;
       world.appendChild(el);
-      const agent = { el, color, x, y, idleUntil: 0 };
+      const agent = {
+        el,
+        x,
+        y,
+        idleUntil: 0,
+        busy: false,
+        lag: rand(0.06, 0.16),
+        ox: rand(-36, 36),
+        oy: rand(-36, 36),
+      };
       agents.push(agent);
       return agent;
     };
 
     const moveTo = (a: Agent, x: number, y: number, ms?: number) => {
       const dist = Math.hypot(x - a.x, y - a.y);
-      const d = ms ?? clamp(dist * 0.8, 200, 700) / speed();
+      const d = ms ?? clamp(dist * 0.95, 240, 840) / speed();
       a.x = x;
       a.y = y;
       a.el.style.transition = `transform ${d}ms cubic-bezier(.45,.05,.25,1)`;
@@ -162,12 +177,11 @@ export default function SwarmBuild() {
 
       const caret = document.createElement("span");
       caret.className = "swarm-caret";
-      caret.style.background = a.color;
       a.el.classList.add("is-typing");
       markDone(el);
 
       const total = nodes.reduce((s, n) => s + n.full.length, 0);
-      const step = Math.max(1, Math.ceil(total / (900 / 16)));
+      const step = Math.max(1, Math.ceil(total / (1100 / 16)));
       let tick = 0;
       for (const { node, full, rest } of nodes) {
         rest.before(caret);
@@ -195,14 +209,13 @@ export default function SwarmBuild() {
 
       const box = document.createElement("div");
       box.className = "swarm-box";
-      box.style.cssText = `left:${r.x}px;top:${r.y}px;border-color:${a.color}`;
+      box.style.cssText = `left:${r.x}px;top:${r.y}px`;
       const badge = document.createElement("span");
       badge.className = "swarm-badge";
-      badge.style.background = a.color;
       box.appendChild(badge);
       world.appendChild(box);
 
-      const dragMs = clamp(Math.hypot(r.w, r.h) * 0.9, 220, 600) / speed();
+      const dragMs = clamp(Math.hypot(r.w, r.h) * 1.05, 260, 720) / speed();
       const start = performance.now();
       const grow = () => {
         const t = clamp((performance.now() - start) / dragMs, 0, 1);
@@ -219,7 +232,7 @@ export default function SwarmBuild() {
       if (canType(el)) await typeIn(a, el);
       else {
         fadeIn(el);
-        await wait(260 / speed());
+        await wait(320 / speed());
       }
 
       box.classList.add("is-done");
@@ -275,32 +288,85 @@ export default function SwarmBuild() {
     };
 
     async function run(a: Agent) {
-      while (!stopped) {
+      while (!stopped && !following) {
         const el = take();
         if (el) {
           a.idleUntil = 0;
+          a.busy = true;
           await build(a, el);
+          a.busy = false;
         } else if (pending <= 0) return finish();
         else await wander(a);
       }
     }
 
     /* ---------------- intro + teardown ---------------- */
+    const leave = () => {
+      stopped = true;
+      layer.classList.add("is-leaving");
+      setTimeout(cleanup, 500);
+    };
+
     let finishing = false;
     function finish(fast = false) {
       if (finishing) return;
       finishing = true;
-      setTimeout(
-        () => {
-          stopped = true;
-          layer.classList.add("is-leaving");
-          setTimeout(cleanup, 500);
-        },
-        fast ? 0 : 1800
-      );
+      // With a mouse, the swarm sticks around and follows it; on touch
+      // screens there is nothing to follow, so it just fades out
+      if (!fast && canFollow) return follow();
+      setTimeout(leave, fast ? 0 : 2200);
+    }
+
+    /* Once the page is built: trail the mouse while it moves, and settle
+       into a slowly turning ring around it when it stops */
+    const canFollow = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    let following = false;
+    let raf = 0;
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let lastMove = 0;
+    let ringAngle = 0;
+    const onMouse = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      lastMove = performance.now();
+    };
+
+    function follow() {
+      following = true;
+      skipBtn.remove();
+      window.addEventListener("mousemove", onMouse, { passive: true });
+      const radius = Math.max(44, agents.length * 3.6);
+
+      const frame = (now: number) => {
+        const idle = now - lastMove > 220;
+        const mx = mouseX + window.scrollX;
+        const my = mouseY + window.scrollY;
+        ringAngle += 0.004;
+        agents.forEach((a, i) => {
+          // A cursor still finishing its last element joins when it is done
+          if (a.busy) return;
+          a.el.style.transition = "none";
+          let tx = mx + a.ox;
+          let ty = my + a.oy;
+          let k = a.lag;
+          if (idle) {
+            const angle = ringAngle + (i / agents.length) * Math.PI * 2;
+            tx = mx + Math.cos(angle) * radius;
+            ty = my + Math.sin(angle) * radius;
+            k = 0.1;
+          }
+          a.x += (tx - a.x) * k;
+          a.y += (ty - a.y) * k;
+          a.el.style.transform = `translate(${a.x}px, ${a.y}px)`;
+        });
+        raf = requestAnimationFrame(frame);
+      };
+      raf = requestAnimationFrame(frame);
     }
 
     const skip = () => {
+      if (following) return leave();
       stopped = true;
       targets.forEach(markDone);
       document.querySelectorAll(".swarm-caret").forEach((c) => c.remove());
@@ -311,6 +377,8 @@ export default function SwarmBuild() {
     window.addEventListener("keydown", onKey);
 
     const cleanup = () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("mousemove", onMouse);
       io.disconnect();
       window.removeEventListener("scroll", syncScroll);
       window.removeEventListener("keydown", onKey);
@@ -340,9 +408,9 @@ export default function SwarmBuild() {
         agents.forEach((a, i) => {
           const angle = (i / agents.length) * Math.PI * 2 + round * 1.3 + rand(-0.4, 0.4);
           const rad = rand(48, 110);
-          moveTo(a, cx + Math.cos(angle) * rad, cy + Math.sin(angle) * rad, rand(450, 650));
+          moveTo(a, cx + Math.cos(angle) * rad, cy + Math.sin(angle) * rad, rand(540, 780));
         });
-        await wait(600);
+        await wait(720);
       }
       logo.classList.add("is-done");
       setTimeout(() => logo.remove(), 400);
