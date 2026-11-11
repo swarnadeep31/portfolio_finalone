@@ -8,6 +8,8 @@ import { useEffect } from "react";
   dragging out a selection box with a live size badge, then typing the
   text in (or fading the element in). Elements below the fold are built
   as they scroll into view. Esc or "Skip" reveals everything at once.
+  Once everything is built, the cursors follow the mouse and circle it
+  when it stops (Esc dismisses them); on touch screens they fade out.
 
   The <head> script in layout.tsx sets html[data-swarm="intro"] before
   first paint so nothing flashes; this component takes over from there.
@@ -25,7 +27,17 @@ const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 // Monochrome arrow that follows the theme: white on dark, black on light
 const CURSOR_SVG = `<svg width="18" height="20" viewBox="0 0 18 20" fill="none"><path d="M1.5 1.5 L16 9.2 L9.4 10.9 L6.2 17.6 Z" fill="var(--foreground)" stroke="var(--background)" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
 
-type Agent = { el: HTMLDivElement; x: number; y: number; idleUntil: number };
+type Agent = {
+  el: HTMLDivElement;
+  x: number;
+  y: number;
+  idleUntil: number;
+  busy: boolean;
+  // How loosely this cursor trails the mouse once the page is built
+  lag: number;
+  ox: number;
+  oy: number;
+};
 
 export default function SwarmBuild() {
   useEffect(() => {
@@ -86,7 +98,16 @@ export default function SwarmBuild() {
       el.innerHTML = CURSOR_SVG;
       el.style.transform = `translate(${x}px, ${y}px)`;
       world.appendChild(el);
-      const agent = { el, x, y, idleUntil: 0 };
+      const agent = {
+        el,
+        x,
+        y,
+        idleUntil: 0,
+        busy: false,
+        lag: rand(0.06, 0.16),
+        ox: rand(-36, 36),
+        oy: rand(-36, 36),
+      };
       agents.push(agent);
       return agent;
     };
@@ -267,32 +288,85 @@ export default function SwarmBuild() {
     };
 
     async function run(a: Agent) {
-      while (!stopped) {
+      while (!stopped && !following) {
         const el = take();
         if (el) {
           a.idleUntil = 0;
+          a.busy = true;
           await build(a, el);
+          a.busy = false;
         } else if (pending <= 0) return finish();
         else await wander(a);
       }
     }
 
     /* ---------------- intro + teardown ---------------- */
+    const leave = () => {
+      stopped = true;
+      layer.classList.add("is-leaving");
+      setTimeout(cleanup, 500);
+    };
+
     let finishing = false;
     function finish(fast = false) {
       if (finishing) return;
       finishing = true;
-      setTimeout(
-        () => {
-          stopped = true;
-          layer.classList.add("is-leaving");
-          setTimeout(cleanup, 500);
-        },
-        fast ? 0 : 2200
-      );
+      // With a mouse, the swarm sticks around and follows it; on touch
+      // screens there is nothing to follow, so it just fades out
+      if (!fast && canFollow) return follow();
+      setTimeout(leave, fast ? 0 : 2200);
+    }
+
+    /* Once the page is built: trail the mouse while it moves, and settle
+       into a slowly turning ring around it when it stops */
+    const canFollow = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    let following = false;
+    let raf = 0;
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let lastMove = 0;
+    let ringAngle = 0;
+    const onMouse = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      lastMove = performance.now();
+    };
+
+    function follow() {
+      following = true;
+      skipBtn.remove();
+      window.addEventListener("mousemove", onMouse, { passive: true });
+      const radius = Math.max(44, agents.length * 3.6);
+
+      const frame = (now: number) => {
+        const idle = now - lastMove > 220;
+        const mx = mouseX + window.scrollX;
+        const my = mouseY + window.scrollY;
+        ringAngle += 0.004;
+        agents.forEach((a, i) => {
+          // A cursor still finishing its last element joins when it is done
+          if (a.busy) return;
+          a.el.style.transition = "none";
+          let tx = mx + a.ox;
+          let ty = my + a.oy;
+          let k = a.lag;
+          if (idle) {
+            const angle = ringAngle + (i / agents.length) * Math.PI * 2;
+            tx = mx + Math.cos(angle) * radius;
+            ty = my + Math.sin(angle) * radius;
+            k = 0.1;
+          }
+          a.x += (tx - a.x) * k;
+          a.y += (ty - a.y) * k;
+          a.el.style.transform = `translate(${a.x}px, ${a.y}px)`;
+        });
+        raf = requestAnimationFrame(frame);
+      };
+      raf = requestAnimationFrame(frame);
     }
 
     const skip = () => {
+      if (following) return leave();
       stopped = true;
       targets.forEach(markDone);
       document.querySelectorAll(".swarm-caret").forEach((c) => c.remove());
@@ -303,6 +377,8 @@ export default function SwarmBuild() {
     window.addEventListener("keydown", onKey);
 
     const cleanup = () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("mousemove", onMouse);
       io.disconnect();
       window.removeEventListener("scroll", syncScroll);
       window.removeEventListener("keydown", onKey);
