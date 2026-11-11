@@ -27,8 +27,8 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const rand = (a: number, b: number) => a + Math.random() * (b - a);
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
-const CURSOR_SVG = (color: string) =>
-  `<svg width="18" height="20" viewBox="0 0 18 20" fill="none"><path d="M1.5 1.5 L16 9.2 L9.4 10.9 L6.2 17.6 Z" fill="${color}" stroke="rgba(0,0,0,.55)" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
+// Monochrome arrow that follows the theme: white on dark, black on light
+const CURSOR_SVG = `<svg width="18" height="20" viewBox="0 0 18 20" fill="none"><path d="M1.5 1.5 L16 9.2 L9.4 10.9 L6.2 17.6 Z" fill="var(--foreground)" stroke="var(--background)" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
 
 type Agent = { el: HTMLDivElement; color: string; x: number; y: number; idleUntil: number };
 
@@ -89,7 +89,7 @@ export default function SwarmBuild() {
       const color = COLORS[agents.length % COLORS.length];
       const el = document.createElement("div");
       el.className = "swarm-cursor";
-      el.innerHTML = CURSOR_SVG(color);
+      el.innerHTML = CURSOR_SVG;
       el.style.transform = `translate(${x}px, ${y}px)`;
       world.appendChild(el);
       const agent = { el, color, x, y, idleUntil: 0 };
