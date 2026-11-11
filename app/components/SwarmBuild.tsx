@@ -99,7 +99,7 @@ export default function SwarmBuild() {
 
     const moveTo = (a: Agent, x: number, y: number, ms?: number) => {
       const dist = Math.hypot(x - a.x, y - a.y);
-      const d = ms ?? clamp(dist * 0.8, 200, 700) / speed();
+      const d = ms ?? clamp(dist * 0.95, 240, 840) / speed();
       a.x = x;
       a.y = y;
       a.el.style.transition = `transform ${d}ms cubic-bezier(.45,.05,.25,1)`;
@@ -167,7 +167,7 @@ export default function SwarmBuild() {
       markDone(el);
 
       const total = nodes.reduce((s, n) => s + n.full.length, 0);
-      const step = Math.max(1, Math.ceil(total / (900 / 16)));
+      const step = Math.max(1, Math.ceil(total / (1100 / 16)));
       let tick = 0;
       for (const { node, full, rest } of nodes) {
         rest.before(caret);
@@ -202,7 +202,7 @@ export default function SwarmBuild() {
       box.appendChild(badge);
       world.appendChild(box);
 
-      const dragMs = clamp(Math.hypot(r.w, r.h) * 0.9, 220, 600) / speed();
+      const dragMs = clamp(Math.hypot(r.w, r.h) * 1.05, 260, 720) / speed();
       const start = performance.now();
       const grow = () => {
         const t = clamp((performance.now() - start) / dragMs, 0, 1);
@@ -219,7 +219,7 @@ export default function SwarmBuild() {
       if (canType(el)) await typeIn(a, el);
       else {
         fadeIn(el);
-        await wait(260 / speed());
+        await wait(320 / speed());
       }
 
       box.classList.add("is-done");
@@ -296,7 +296,7 @@ export default function SwarmBuild() {
           layer.classList.add("is-leaving");
           setTimeout(cleanup, 500);
         },
-        fast ? 0 : 1800
+        fast ? 0 : 2200
       );
     }
 
@@ -340,9 +340,9 @@ export default function SwarmBuild() {
         agents.forEach((a, i) => {
           const angle = (i / agents.length) * Math.PI * 2 + round * 1.3 + rand(-0.4, 0.4);
           const rad = rand(48, 110);
-          moveTo(a, cx + Math.cos(angle) * rad, cy + Math.sin(angle) * rad, rand(450, 650));
+          moveTo(a, cx + Math.cos(angle) * rad, cy + Math.sin(angle) * rad, rand(540, 780));
         });
-        await wait(600);
+        await wait(720);
       }
       logo.classList.add("is-done");
       setTimeout(() => logo.remove(), 400);
