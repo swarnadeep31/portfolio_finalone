@@ -167,7 +167,7 @@ html[data-swarm="intro"] body > * {
 
 .swarm-box {
   position: absolute;
-  border: 1px solid;
+  border: 1px solid var(--foreground);
   border-radius: 2px;
   transition: opacity 0.35s;
 }
@@ -185,8 +185,9 @@ html[data-swarm="intro"] body > * {
   transform: translateX(-50%);
   padding: 1px 6px;
   border-radius: 3px;
+  background: var(--foreground);
   font: 500 10px/16px var(--font-mono);
-  color: #0a0a0a;
+  color: var(--background);
   white-space: nowrap;
 }
 
@@ -215,6 +216,7 @@ html[data-swarm="intro"] body > * {
   height: 0.9em;
   margin-right: -2px;
   vertical-align: -0.1em;
+  background: var(--foreground);
   animation: swarm-blink 0.9s steps(1) infinite;
 }
 

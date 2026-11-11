@@ -13,11 +13,6 @@ import { useEffect } from "react";
   first paint so nothing flashes; this component takes over from there.
 */
 
-const COLORS = [
-  "#f87171", "#fb923c", "#facc15", "#4ade80", "#2dd4bf",
-  "#38bdf8", "#818cf8", "#c084fc", "#f472b6", "#a3e635",
-];
-
 const TARGETS =
   "h1,h2,h3,h4,h5,p,span,a,button,img,svg,li,label,input,textarea,select";
 
@@ -30,7 +25,7 @@ const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 // Monochrome arrow that follows the theme: white on dark, black on light
 const CURSOR_SVG = `<svg width="18" height="20" viewBox="0 0 18 20" fill="none"><path d="M1.5 1.5 L16 9.2 L9.4 10.9 L6.2 17.6 Z" fill="var(--foreground)" stroke="var(--background)" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
 
-type Agent = { el: HTMLDivElement; color: string; x: number; y: number; idleUntil: number };
+type Agent = { el: HTMLDivElement; x: number; y: number; idleUntil: number };
 
 export default function SwarmBuild() {
   useEffect(() => {
@@ -86,13 +81,12 @@ export default function SwarmBuild() {
     /* ---------------- agents ---------------- */
     const agents: Agent[] = [];
     const spawn = (x: number, y: number) => {
-      const color = COLORS[agents.length % COLORS.length];
       const el = document.createElement("div");
       el.className = "swarm-cursor";
       el.innerHTML = CURSOR_SVG;
       el.style.transform = `translate(${x}px, ${y}px)`;
       world.appendChild(el);
-      const agent = { el, color, x, y, idleUntil: 0 };
+      const agent = { el, x, y, idleUntil: 0 };
       agents.push(agent);
       return agent;
     };
@@ -162,7 +156,6 @@ export default function SwarmBuild() {
 
       const caret = document.createElement("span");
       caret.className = "swarm-caret";
-      caret.style.background = a.color;
       a.el.classList.add("is-typing");
       markDone(el);
 
@@ -195,10 +188,9 @@ export default function SwarmBuild() {
 
       const box = document.createElement("div");
       box.className = "swarm-box";
-      box.style.cssText = `left:${r.x}px;top:${r.y}px;border-color:${a.color}`;
+      box.style.cssText = `left:${r.x}px;top:${r.y}px`;
       const badge = document.createElement("span");
       badge.className = "swarm-badge";
-      badge.style.background = a.color;
       box.appendChild(badge);
       world.appendChild(box);
 
