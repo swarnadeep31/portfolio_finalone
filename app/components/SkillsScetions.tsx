@@ -3,43 +3,7 @@
 import SectionWrapper from "./StackedSection";
 import SectionHeader from "./SectionHeader";
 import Reveal from "./Reveal";
-
-const skills = [
-  { name: "HTML / CSS", category: "frontend" },
-  { name: "JavaScript", category: "frontend" },
-  { name: "React", category: "frontend" },
-  { name: "TypeScript", category: "frontend" },
-  { name: "Tailwind CSS", category: "frontend" },
-  { name: "MongoDB", category: "backend" },
-  { name: "SQL", category: "backend" },
-  { name: "PostgreSQL", category: "backend" },
-  { name: "Git & GitHub", category: "tools" },
-  { name: "Figma", category: "tools" },
-  { name: "VS Code", category: "tools" },
-  { name: "Next.js", category: "frontend" },
-  { name: "NextAuth", category: "frontend" },
-  { name: "Recharts", category: "frontend" },
-  { name: "Framer Motion", category: "frontend" },
-  { name: "Node.js", category: "backend" },
-  { name: "Mongoose", category: "backend" },
-];
-
-const categories = [
-  { key: "frontend", label: "Frontend" },
-  { key: "backend", label: "Backend" },
-  { key: "tools", label: "Tools" },
-] as const;
-
-const marquee = [
-  "React",
-  "Next.js",
-  "TypeScript",
-  "Tailwind CSS",
-  "Node.js",
-  "MongoDB",
-  "Framer Motion",
-  "PostgreSQL",
-];
+import { categories, marquee, skills } from "../lib/content";
 
 function Marquee() {
   // Two identical halves so translating by -50% loops seamlessly
