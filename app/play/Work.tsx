@@ -48,6 +48,10 @@ export default function Work() {
                 <span className="col-span-10 col-start-3 mt-2 font-mono text-[11px] text-muted uppercase transition-colors group-hover:text-background/70 md:col-span-5 md:col-start-auto md:mt-0">
                   <Scramble text={p.tags.slice(0, 4).join(" · ")} delay={0.2 + i * 0.08} />
                 </span>
+                {/* Touch screens have no hover preview: show the screenshot in the row */}
+                <span className="relative col-span-10 col-start-3 mt-5 hidden aspect-video overflow-hidden rounded-lg bg-surface [@media(hover:none)]:block">
+                  <Image src={p.image!} alt="" fill sizes="(min-width: 768px) 50vw, 85vw" className="object-cover object-top" />
+                </span>
                 <span className="hidden text-right font-mono text-xs transition-colors group-hover:text-background md:col-span-2 md:block">
                   {new URL(p.demoUrl).host.replace("www.", "")} ↗
                 </span>

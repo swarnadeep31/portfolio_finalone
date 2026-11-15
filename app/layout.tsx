@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "./components/ui/toaster";
+import { themeScript } from "./play/themeScript";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const geistMono = Geist_Mono({
@@ -28,8 +29,7 @@ export const viewport: Viewport = {
   ],
 };
 
-/* Applies the saved palette before first paint so there is no flash */
-const themeScript = `(function(){try{var p=localStorage.getItem("palette")||"paper";var d=document.documentElement;d.dataset.palette=p;d.dataset.theme=p==="ink"||p==="night"?"dark":"light";}catch(e){}})();`;
+/* Applies the saved theme before first paint (see play/palettes.ts) */
 
 export default function RootLayout({
   children,
