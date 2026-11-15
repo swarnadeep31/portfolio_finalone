@@ -1,29 +1,24 @@
 import { MotionConfig } from "framer-motion";
-import AboutSection from "../components/AboutScetion";
-import ContactSection from "../components/ContactScetion";
-import Footer from "../components/Footer";
-import HeroSection from "../components/HeroSecton";
-import Navbar from "../components/Navbar";
-import ProjectSection from "../components/ProjectScetion";
-import SkillsScetions from "../components/SkillsScetions";
-import SwarmBuild from "../components/SwarmBuild";
+import About from "../play/About";
+import Bar from "../play/Bar";
+import Intro from "../play/Intro";
+import Outro from "../play/Outro";
+import Stack from "../play/Stack";
+import Work from "../play/Work";
 
 export const Home = () => {
   return (
     // Respect the visitor's "reduce motion" OS setting for all animations
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen overflow-x-clip bg-background text-foreground">
-        <Navbar />
-        <main>
-          <HeroSection />
-          <AboutSection />
-          <SkillsScetions />
-          <ProjectSection />
-          <ContactSection />
-        </main>
-        <Footer />
-        <SwarmBuild />
-      </div>
+      <h1 className="sr-only">Swarnadeep Roy — Fullstack Developer &amp; UI Engineer</h1>
+      <main className="min-h-screen overflow-x-clip bg-background text-foreground">
+        <Intro />
+        <Work />
+        <About />
+        <Stack />
+      </main>
+      <Outro />
+      <Bar />
     </MotionConfig>
   );
 };
