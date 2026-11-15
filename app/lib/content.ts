@@ -126,7 +126,7 @@ export const highlights = [
 ];
 
 export const contact = {
-  email: "swarnadeep040@gmail.com",
+  email: "swarnadeepr92@gmail.com",
   phone: "+91 74397 32996",
   phoneHref: "tel:+917439732996",
   location: "Kolkata, India",
