@@ -87,7 +87,9 @@ function AsciiField() {
 
 export default function Outro() {
   const { status, onSubmit } = useContactForm();
-  const field = "w-full border-b border-background/30 bg-transparent py-3 outline-none placeholder:text-background/40 focus:border-background";
+  const field =
+    "mt-2 w-full rounded-md border border-background/25 bg-background/[0.06] px-4 py-3.5 text-base outline-none transition-colors placeholder:text-background/35 hover:border-background/45 focus:border-background focus:bg-background/10";
+  const label = "block font-mono text-[11px] uppercase opacity-70";
 
   return (
     <footer id="contact" className="relative overflow-hidden bg-foreground pb-32 text-background">
@@ -123,18 +125,32 @@ export default function Outro() {
           </ul>
         </div>
 
-        <form onSubmit={onSubmit} className="col-span-12 space-y-4 self-end bg-foreground/80 backdrop-blur-sm md:col-span-5 md:col-start-8">
+        <form
+          onSubmit={onSubmit}
+          className="col-span-12 space-y-6 self-end rounded-xl border border-background/20 bg-foreground/85 p-6 backdrop-blur-sm sm:p-8 md:col-span-6 md:col-start-7 lg:col-span-5 lg:col-start-8">
+          <p className="font-mono text-[11px] uppercase opacity-60">Send a message</p>
           {status === "sent" ? (
             <p className="py-10 font-mono text-sm uppercase">
               <Scramble text="Message received — talk soon." />
             </p>
           ) : (
             <>
-              <input name="name" required placeholder="Name" aria-label="Name" className={field} />
-              <input name="email" type="email" required placeholder="Email" aria-label="Email" className={field} />
-              <textarea name="message" required rows={3} placeholder="Message" aria-label="Message" className={`${field} resize-none`} />
-              <div className="flex items-center gap-4 pt-2">
-                <button disabled={status === "sending"} className="rounded-md bg-background px-5 py-2.5 font-mono text-xs text-foreground uppercase transition-opacity hover:opacity-80 disabled:opacity-50">
+              <div className="grid gap-6 sm:grid-cols-2 sm:gap-4">
+                <label className={label}>
+                  Name
+                  <input name="name" required placeholder="Jane Doe" autoComplete="name" className={field} />
+                </label>
+                <label className={label}>
+                  Email
+                  <input name="email" type="email" required placeholder="jane@company.com" autoComplete="email" className={field} />
+                </label>
+              </div>
+              <label className={label}>
+                Message
+                <textarea name="message" required rows={4} placeholder="Tell me about your project…" className={`${field} resize-none`} />
+              </label>
+              <div className="flex flex-wrap items-center gap-4 pt-1">
+                <button disabled={status === "sending"} className="rounded-md bg-background px-7 py-3.5 font-mono text-xs text-foreground uppercase transition-opacity hover:opacity-80 disabled:opacity-50">
                   {status === "sending" ? "Sending…" : "Send ↗"}
                 </button>
                 {status === "error" && <p className="font-mono text-xs">Something went wrong — try again.</p>}

@@ -16,7 +16,7 @@ export default function Work() {
   return (
     <section id="work" className="py-[22vh]" onPointerMove={(e) => { x.set(e.clientX); y.set(e.clientY); }}>
       <div className="container-page">
-        <div className="grid grid-cols-12 border-b pb-3 font-mono text-[11px] text-muted uppercase">
+        <div className="grid grid-cols-12 border-b px-4 pb-3 font-mono text-[11px] text-muted uppercase md:px-8">
           <span className="col-span-2 md:col-span-1">No.</span>
           <span className="col-span-10 md:col-span-4">Project</span>
           <span className="hidden md:col-span-5 md:block">Built with</span>
@@ -36,9 +36,9 @@ export default function Work() {
                 }}
                 onFocus={() => setActive(i)}
                 onBlur={() => setActive(null)}
-                className="group relative isolate grid grid-cols-12 items-baseline border-b py-6 md:py-8">
+                className="group relative isolate grid grid-cols-12 items-baseline border-b px-4 py-7 md:px-8 md:py-10">
                 {/* Ink wipe on hover */}
-                <span className="absolute inset-0 -z-10 origin-left scale-x-0 bg-foreground transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.2,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100" />
+                <span className="absolute inset-x-0 inset-y-1.5 -z-10 origin-left scale-x-0 rounded-lg bg-foreground transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.2,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100" />
                 <span className="col-span-2 font-mono text-xs transition-colors group-hover:text-background md:col-span-1">
                   <Scramble text={String(i + 1).padStart(2, "0")} />
                 </span>
@@ -70,15 +70,20 @@ export default function Work() {
               animate={{ clipPath: "inset(0% 0% 0% 0%)", rotate: 0 }}
               exit={{ clipPath: "inset(50% 50% 50% 50%)", opacity: 0 }}
               transition={{ duration: 0.45, ease: [0.7, 0, 0.2, 1] }}
-              className="relative -mt-[110px] ml-6 h-[220px] w-[340px] overflow-hidden bg-surface shadow-2xl">
+              className="-mt-[130px] ml-8 w-[360px] rounded-xl bg-foreground p-2.5 text-background shadow-2xl">
+              <div className="relative h-[210px] overflow-hidden rounded-md bg-surface">
               {projects[active].video ? (
                 <video src={projects[active].video} poster={projects[active].image} autoPlay muted loop playsInline className="h-full w-full object-cover object-top" />
               ) : (
                 <Image src={projects[active].image!} alt="" fill sizes="340px" className="object-cover object-top" />
               )}
-              <span className="absolute bottom-2 left-2 bg-black px-1.5 py-0.5 font-mono text-[10px] text-white uppercase">
-                {String(active + 1).padStart(2, "0")} / {projects[active].title}
-              </span>
+              </div>
+              <p className="flex items-center justify-between px-1.5 pt-2.5 pb-1 font-mono text-[10px] uppercase">
+                <span>
+                  {String(active + 1).padStart(2, "0")} / {projects[active].title}
+                </span>
+                <span className="opacity-60">Open ↗</span>
+              </p>
             </motion.div>
           )}
         </AnimatePresence>

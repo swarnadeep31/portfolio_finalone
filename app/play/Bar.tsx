@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { contact } from "../lib/content";
 import { nextPalette } from "./palettes";
 import { synth } from "./synth";
 
@@ -27,7 +26,14 @@ export default function Bar() {
       />
       <a href="#top" className="hover:opacity-70">Swarnadeep Roy</a>
       <span className="hidden opacity-50 sm:inline">Fullstack Developer</span>
-      <a href={`mailto:${contact.email}`} className="underline-offset-4 hover:underline md:ml-6">
+      <a
+        href="#contact"
+        onClick={() => {
+          synth.tick(true);
+          // After the smooth scroll lands, put the cursor in the form
+          setTimeout(() => document.querySelector<HTMLInputElement>("#contact input[name=name]")?.focus({ preventScroll: true }), 900);
+        }}
+        className="underline-offset-4 hover:underline md:ml-6">
         Let’s talk
       </a>
       <button
