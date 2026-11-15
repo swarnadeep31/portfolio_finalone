@@ -53,7 +53,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const FROM = process.env.FROM_EMAIL || "Portfolio <onboarding@resend.dev>";
 const TO = process.env.TO_EMAIL?.split(",").map((e) => e.trim()) || [
-  "your-email@example.com",
+  "swarnadeepr92@gmail.com",
 ];
 
 /* --------------------------------------------

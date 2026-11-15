@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "./components/ui/toaster";
+import { themeScript } from "./play/themeScript";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const geistMono = Geist_Mono({
@@ -28,9 +29,7 @@ export const viewport: Viewport = {
   ],
 };
 
-/* Applies the saved theme before first paint so there is no flash, and
-   hides the page for the swarm intro (see components/SwarmBuild.tsx) */
-const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t!=="light")t="dark";var d=document.documentElement;d.dataset.theme=t;d.style.colorScheme=t;if(!matchMedia("(prefers-reduced-motion: reduce)").matches)d.dataset.swarm="intro";}catch(e){}})();`;
+/* Applies the saved theme before first paint (see play/palettes.ts) */
 
 export default function RootLayout({
   children,

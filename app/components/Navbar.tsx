@@ -176,9 +176,9 @@ export default function Navbar() {
             <div className="container-page pb-10">
               <p className="label-mono">Get in touch</p>
               <a
-                href="mailto:swarnadeeproy35@gmail.com"
+                href="mailto:swarnadeepr92@gmail.com"
                 className="mt-2 block text-lg">
-                swarnadeeproy35@gmail.com
+                swarnadeepr92@gmail.com
               </a>
             </div>
           </motion.div>

@@ -12,6 +12,7 @@ import { ArrowUpRight } from "lucide-react";
 import SectionWrapper from "./StackedSection";
 import SectionHeader from "./SectionHeader";
 import Reveal from "./Reveal";
+import { highlights } from "../lib/content";
 
 /* Words wrapped in *asterisks* render in the italic serif accent */
 const statement =
@@ -26,21 +27,6 @@ const words = (() => {
     return word;
   });
 })();
-
-const highlights = [
-  {
-    title: "Frontend Engineering",
-    desc: "Modern, scalable UI development using React, TypeScript, and Tailwind.",
-  },
-  {
-    title: "Computer Science",
-    desc: "Strong foundation in software engineering and problem-solving.",
-  },
-  {
-    title: "Real Projects",
-    desc: "Hands-on experience building and shipping production-ready applications.",
-  },
-];
 
 function Word({
   children,
