@@ -68,7 +68,7 @@ export const projects: Project[] = [
       "MongoDB",
       "Gemini",
     ],
-    demoUrl: "https://riderai-client.vercel.app",
+    demoUrl: "https://trail-cast.vercel.app/",
     githubUrl: "https://github.com/swarnadeep31/RiderAI",
   },
 ];
