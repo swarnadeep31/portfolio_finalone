@@ -131,5 +131,5 @@ export const contact = {
   phoneHref: "tel:+917439732996",
   location: "Kolkata, India",
   resume:
-    "https://drive.google.com/file/d/1cYkl6aOoQMLDH7CNthm1EroNUbKlthXS/view?usp=sharing",
+    "https://drive.google.com/file/d/1s3IEJQvURW8O4kkMv26YBuYlTih7ZSSr/view?usp=sharing",
 };
